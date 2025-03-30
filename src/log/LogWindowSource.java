@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
-/**
- * слушатели удаляются из списка m_listeners в методе unregisterListener
- * ограничено количество сообщений в логе величиной m_iQueueLength.
- */
 public class LogWindowSource {
     private final int m_iQueueLength;
     private final LinkedList<LogEntry> m_messages;

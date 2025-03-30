@@ -8,6 +8,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.*;
 import javax.swing.*;
 import static java.lang.Math.round;
+import java.util.Locale;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
@@ -15,6 +16,7 @@ public class MainApplicationFrame extends JFrame {
     private int oldHeight = -1;
 
     public MainApplicationFrame() {
+        setRussianLocale();
         int inset = 50;
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Rectangle screenBounds = gd.getDefaultConfiguration().getBounds();
@@ -46,19 +48,42 @@ public class MainApplicationFrame extends JFrame {
         });
     }
 
+    // TODO Попробовать разобраться, как все стандартные предопределенные компоненты заставить работать на русском языке
+    private void setRussianLocale() {
+        Locale.setDefault(new Locale("ru", "RU"));
+        // TODO Cделать так, чтобы диалог на основе JOptionPane выдавал текст на кнопках на русском языке
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        UIManager.put("OptionPane.okButtonText", "ОК");
+        UIManager.put("FileChooser.openDialogTitleText", "Открыть файл");
+        UIManager.put("FileChooser.saveDialogTitleText", "Сохранить файл");
+        UIManager.put("FileChooser.cancelButtonText", "Отмена");
+        UIManager.put("FileChooser.openButtonText", "Открыть");
+        UIManager.put("FileChooser.saveButtonText", "Сохранить");
+        UIManager.put("FileChooser.lookInLabelText", "Смотреть в");
+        UIManager.put("FileChooser.fileNameLabelText", "Имя файла");
+        UIManager.put("FileChooser.filesOfTypeLabelText", "Тип файлов");
+        UIManager.put("FileChooser.upFolderToolTipText", "На уровень выше");
+        UIManager.put("FileChooser.homeFolderToolTipText", "Домой");
+        UIManager.put("FileChooser.newFolderToolTipText", "Новая папка");
+        UIManager.put("FileChooser.listViewButtonToolTipText", "Список");
+        UIManager.put("FileChooser.detailsViewButtonToolTipText", "Детали");
+    }
+
     void resizeInternalFrames() {
         SwingUtilities.invokeLater(() -> {
             int width = desktopPane.getWidth();
             int height = desktopPane.getHeight();
 
             if (width == 0 || height == 0 || oldWidth <= 0 || oldHeight <= 0) {
-                Logger.debug("Ошибка: размер desktopPane некорректен или ещё не инициализирован!");
+                Logger.debug("Размер desktopPane некорректен или ещё не инициализирован!");
                 oldWidth = width;
                 oldHeight = height;
                 return;
             }
 
-            Logger.debug("Изменяем размеры окон: " + width + "x" + height);
+            Logger.debug("Изменяем размеры окон: (" + width + ", " + height + ")");
 
             for (JInternalFrame frame : desktopPane.getAllFrames()) {
                 double widthRatio = (double) frame.getWidth() / oldWidth;
@@ -154,7 +179,7 @@ public class MainApplicationFrame extends JFrame {
         return addLogMessageItem;
     }
 
-    // TODO требуется добавить пункт меню, позволяющий закрыть приложение;
+    // TODO Требуется добавить пункт меню, позволяющий закрыть приложение;
     private JMenu createApplicationMenu() {
         JMenu appMenu = new JMenu("Приложение");
         appMenu.setMnemonic(KeyEvent.VK_A);
@@ -165,8 +190,7 @@ public class MainApplicationFrame extends JFrame {
         return appMenu;
     }
 
-    /* TODO требуется собрать обработку события выхода из приложения в один метод и
-            сделать так, чтобы в этом методе выдавался запрос на подтверждение выхода */
+    // TODO требуется собрать обработку события выхода из приложения в один метод и сделать так, чтобы в этом методе выдавался запрос на подтверждение выхода
     private void handleExit() {
         int result = JOptionPane.showConfirmDialog(
                 this,
