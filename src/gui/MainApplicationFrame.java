@@ -21,17 +21,27 @@ public class MainApplicationFrame extends JFrame {
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         setBounds(inset, inset, screenSize.width, screenSize.height);
         setContentPane(desktopPane);
+
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(screenSize.width, screenSize.height);
         addWindow(gameWindow);
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
+
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 resizeInternalFrames();
+            }
+        });
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                handleExit();
             }
         });
     }
@@ -150,9 +160,24 @@ public class MainApplicationFrame extends JFrame {
         appMenu.setMnemonic(KeyEvent.VK_A);
         JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_Q);
         exitItem.setToolTipText("Закрыть приложение");
-        exitItem.addActionListener((event) -> System.exit(0));
+        exitItem.addActionListener((event) -> handleExit());
         appMenu.add(exitItem);
         return appMenu;
+    }
+
+    /* TODO требуется собрать обработку события выхода из приложения в один метод и
+            сделать так, чтобы в этом методе выдавался запрос на подтверждение выхода */
+    private void handleExit() {
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                "Вы действительно хотите выйти из приложения?",
+                "Подтверждение выхода",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (result == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }
 
     private void setLookAndFeel(String className) {
