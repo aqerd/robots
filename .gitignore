@@ -68,3 +68,4 @@ assets/config.properties
 /robots/.settings
 /robots/bin
 eclipse.bat
+/out
