@@ -96,6 +96,7 @@ public class MainApplicationFrame extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createLookAndFeelMenu());
         menuBar.add(createTestMenu());
+        menuBar.add(createApplicationMenu());
         return menuBar;
     }
 
@@ -138,9 +139,20 @@ public class MainApplicationFrame extends JFrame {
     JMenuItem createLogMessageMenuItem() {
         JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
         addLogMessageItem.addActionListener((event) -> {
-            Logger.debug("Новая строка");
+            Logger.debug("Строка для логирования");
         });
         return addLogMessageItem;
+    }
+
+    // TODO требуется добавить пункт меню, позволяющий закрыть приложение;
+    private JMenu createApplicationMenu() {
+        JMenu appMenu = new JMenu("Приложение");
+        appMenu.setMnemonic(KeyEvent.VK_A);
+        JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_Q);
+        exitItem.setToolTipText("Закрыть приложение");
+        exitItem.addActionListener((event) -> System.exit(0));
+        appMenu.add(exitItem);
+        return appMenu;
     }
 
     private void setLookAndFeel(String className) {
