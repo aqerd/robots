@@ -48,10 +48,10 @@ public class MainApplicationFrame extends JFrame {
         });
     }
 
-    // TODO Попробовать разобраться, как все стандартные предопределенные компоненты заставить работать на русском языке
+    // Попробовать разобраться, как все стандартные предопределенные компоненты заставить работать на русском языке
     private void setRussianLocale() {
         Locale.setDefault(new Locale("ru", "RU"));
-        // TODO Cделать так, чтобы диалог на основе JOptionPane выдавал текст на кнопках на русском языке
+        // Cделать так, чтобы диалог на основе JOptionPane выдавал текст на кнопках на русском языке
         UIManager.put("OptionPane.yesButtonText", "Да");
         UIManager.put("OptionPane.noButtonText", "Нет");
         UIManager.put("OptionPane.cancelButtonText", "Отмена");
@@ -179,7 +179,7 @@ public class MainApplicationFrame extends JFrame {
         return addLogMessageItem;
     }
 
-    // TODO Требуется добавить пункт меню, позволяющий закрыть приложение;
+    // Требуется добавить пункт меню, позволяющий закрыть приложение;
     private JMenu createApplicationMenu() {
         JMenu appMenu = new JMenu("Приложение");
         appMenu.setMnemonic(KeyEvent.VK_A);
@@ -190,7 +190,7 @@ public class MainApplicationFrame extends JFrame {
         return appMenu;
     }
 
-    // TODO требуется собрать обработку события выхода из приложения в один метод и сделать так, чтобы в этом методе выдавался запрос на подтверждение выхода
+    // требуется собрать обработку события выхода из приложения в один метод и сделать так, чтобы в этом методе выдавался запрос на подтверждение выхода
     private void handleExit() {
         int result = JOptionPane.showConfirmDialog(
                 this,
@@ -200,7 +200,7 @@ public class MainApplicationFrame extends JFrame {
                 JOptionPane.QUESTION_MESSAGE
         );
         if (result == JOptionPane.YES_OPTION) {
-            System.exit(0);
+            System.exit(0); // TODO переделать на что-то более безопасное
         }
     }
 
