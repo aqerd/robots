@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Properties;
 import static java.lang.Math.round;
@@ -19,7 +21,9 @@ public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private int oldWidth = -1;
     private int oldHeight = -1;
-    private static final String CONFIG_FILE_NAME = ".robots-oop/state_save.properties";
+    private static final String USER_HOME = System.getProperty("user.home");
+    private static final String CONFIG_ROOT = ".robots-oop";
+    private static final String CONFIG_FILE_NAME = "state-save.properties";
     private Properties configProperties;
 
     public MainApplicationFrame() {
@@ -217,6 +221,20 @@ public class MainApplicationFrame extends JFrame {
         return desktopPane;
     }
 
+    public static File loadFile() {
+        Path configDir = Paths.get(USER_HOME, CONFIG_ROOT);
+        Path configFilePath = configDir.resolve(CONFIG_FILE_NAME);
+        File configFile = configFilePath.toFile();
+
+        if (!configDir.toFile().exists()) {
+            boolean created = configDir.toFile().mkdirs();
+            if (!created) {
+                Logger.error("Не удалось создать директорию: " + configDir);
+            }
+        }
+        return configFile;
+    }
+
     private void saveWindowConfiguration() {
         Properties props = new Properties();
 
@@ -249,7 +267,7 @@ public class MainApplicationFrame extends JFrame {
             props.setProperty(prefix + ".maximized", String.valueOf(isMaximized));
         }
 
-        File configFile = new File(System.getProperty("user.home"), CONFIG_FILE_NAME);
+        File configFile = loadFile();
         try (FileOutputStream fos = new FileOutputStream(configFile)) {
             props.store(fos, "Window configuration");
             Logger.debug("Конфигурация окон сохранена в " + configFile.getAbsolutePath());
@@ -259,7 +277,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void loadWindowConfiguration() {
-        File configFile = new File(System.getProperty("user.home"), CONFIG_FILE_NAME);
+        File configFile = loadFile();
         if (!configFile.exists()) {
             Logger.debug("Конфигурационный файл отсутствует. Используются настройки по умолчанию.");
             return;
