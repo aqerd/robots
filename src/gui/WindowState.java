@@ -61,14 +61,15 @@ public class WindowState {
             return;
         }
 
-        configProperties = new Properties();
         try (FileInputStream fis = new FileInputStream(configFile)) {
-            configProperties.load(fis);
+            configProperties.load(fis); // Загружаем в переданный объект
             Logger.debug("Конфигурация окон загружена из " + configFile.getAbsolutePath());
         } catch (IOException e) {
             Logger.error("Ошибка загрузки конфигурации: " + e.getMessage());
             return;
         }
+
+        configProperties.forEach((key, value) -> Logger.debug(key + " = " + value));
 
         try {
             int savedExtendedState = Integer.parseInt(configProperties.getProperty("MainFrame.extendedState", String.valueOf(JFrame.NORMAL)));

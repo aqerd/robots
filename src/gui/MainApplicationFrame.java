@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Properties;
-
 import static gui.WindowState.*;
 import static java.lang.Math.round;
 
@@ -23,17 +22,16 @@ public class MainApplicationFrame extends JFrame {
     private static final String USER_HOME = System.getProperty("user.home");
     private static final String CONFIG_ROOT = ".robots-oop";
     private static final String CONFIG_FILE_NAME = "state-save.properties";
-    private Properties configProperties;
+    private Properties configProperties = new Properties();
 
     public MainApplicationFrame() {
         setRussianLocale();
+        loadWindowConfiguration(this, configProperties);
         int inset = 500;
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Rectangle screenBounds = gd.getDefaultConfiguration().getBounds();
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
-        setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
         setContentPane(desktopPane);
-        loadWindowConfiguration(this, configProperties);
         GameWindow gameWindow = new GameWindow();
         addWindow(gameWindow);
         LogWindow logWindow = createLogWindow();
@@ -82,7 +80,6 @@ public class MainApplicationFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             int width = desktopPane.getWidth();
             int height = desktopPane.getHeight();
-
             if (width == 0 || height == 0 || oldWidth <= 0 || oldHeight <= 0) {
                 Logger.debug("Размер desktopPane некорректен или не инициализирован.");
                 oldWidth = width;
