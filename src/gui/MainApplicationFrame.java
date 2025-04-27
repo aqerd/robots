@@ -7,29 +7,36 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.*;
 import javax.swing.*;
-import static java.lang.Math.round;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.Properties;
+import static gui.WindowState.*;
+import static java.lang.Math.round;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private int oldWidth = -1;
     private int oldHeight = -1;
+    private static final String USER_HOME = System.getProperty("user.home");
+    private static final String CONFIG_ROOT = ".robots-oop";
+    private static final String CONFIG_FILE_NAME = "state-save.properties";
+    private Properties configProperties = new Properties();
 
     public MainApplicationFrame() {
         setRussianLocale();
-        int inset = 50;
+        loadWindowConfiguration(this, configProperties);
+        int inset = 500;
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         Rectangle screenBounds = gd.getDefaultConfiguration().getBounds();
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
-        setBounds(inset, inset, screenSize.width, screenSize.height);
         setContentPane(desktopPane);
-
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(screenSize.width, screenSize.height);
         addWindow(gameWindow);
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
-
+        restoreInternalFramesGeometryAndState(desktopPane, configProperties);
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -48,10 +55,8 @@ public class MainApplicationFrame extends JFrame {
         });
     }
 
-    // Попробовать разобраться, как все стандартные предопределенные компоненты заставить работать на русском языке
     private void setRussianLocale() {
         Locale.setDefault(new Locale("ru", "RU"));
-        // Cделать так, чтобы диалог на основе JOptionPane выдавал текст на кнопках на русском языке
         UIManager.put("OptionPane.yesButtonText", "Да");
         UIManager.put("OptionPane.noButtonText", "Нет");
         UIManager.put("OptionPane.cancelButtonText", "Отмена");
@@ -75,14 +80,12 @@ public class MainApplicationFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             int width = desktopPane.getWidth();
             int height = desktopPane.getHeight();
-
             if (width == 0 || height == 0 || oldWidth <= 0 || oldHeight <= 0) {
-                Logger.debug("Размер desktopPane некорректен или ещё не инициализирован!");
+                Logger.debug("Размер desktopPane некорректен или не инициализирован.");
                 oldWidth = width;
                 oldHeight = height;
                 return;
             }
-
             Logger.debug("Изменяем размеры окон: (" + width + ", " + height + ")");
 
             for (JInternalFrame frame : desktopPane.getAllFrames()) {
@@ -115,10 +118,10 @@ public class MainApplicationFrame extends JFrame {
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
+        logWindow.setSize(300, 300);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
+        Logger.debug("Протокол инициализирован.");
         return logWindow;
     }
 
@@ -147,7 +150,7 @@ public class MainApplicationFrame extends JFrame {
 
     JMenuItem createSystemLookAndFeelMenuItem() {
         JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) -> {
+        systemLookAndFeel.addActionListener(e -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
         });
@@ -156,7 +159,7 @@ public class MainApplicationFrame extends JFrame {
 
     JMenuItem createCrossPlatformLookAndFeelMenuItem() {
         JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-        crossplatformLookAndFeel.addActionListener((event) -> {
+        crossplatformLookAndFeel.addActionListener(e -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
         });
@@ -173,24 +176,20 @@ public class MainApplicationFrame extends JFrame {
 
     JMenuItem createLogMessageMenuItem() {
         JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> {
-            Logger.debug("Строка для логирования");
-        });
+        addLogMessageItem.addActionListener(e -> Logger.debug("Строка для логирования"));
         return addLogMessageItem;
     }
 
-    // Требуется добавить пункт меню, позволяющий закрыть приложение;
     private JMenu createApplicationMenu() {
         JMenu appMenu = new JMenu("Приложение");
         appMenu.setMnemonic(KeyEvent.VK_A);
         JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_Q);
         exitItem.setToolTipText("Закрыть приложение");
-        exitItem.addActionListener((event) -> handleExit());
+        exitItem.addActionListener(e -> handleExit());
         appMenu.add(exitItem);
         return appMenu;
     }
 
-    // требуется собрать обработку события выхода из приложения в один метод и сделать так, чтобы в этом методе выдавался запрос на подтверждение выхода
     private void handleExit() {
         int result = JOptionPane.showConfirmDialog(
                 this,
@@ -200,7 +199,8 @@ public class MainApplicationFrame extends JFrame {
                 JOptionPane.QUESTION_MESSAGE
         );
         if (result == JOptionPane.YES_OPTION) {
-            System.exit(0); // TODO переделать на что-то более безопасное
+            saveWindowConfiguration(this, desktopPane);
+            System.exit(0); // TODO сделать безопаснее (не очень хорошо когда оно так неожиданно прерывает работу)
         }
     }
 
@@ -208,13 +208,26 @@ public class MainApplicationFrame extends JFrame {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException
-                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             Logger.error("Ошибка при установке схемы оформления: " + e.getMessage());
         }
     }
 
     public JDesktopPane getDesktopPane() {
         return desktopPane;
+    }
+
+    public static File loadFile() {
+        Path configDir = Paths.get(USER_HOME, CONFIG_ROOT);
+        Path configFilePath = configDir.resolve(CONFIG_FILE_NAME);
+        File configFile = configFilePath.toFile();
+
+        if (!configDir.toFile().exists()) {
+            boolean created = configDir.toFile().mkdirs();
+            if (!created) {
+                Logger.error("Не удалось создать директорию: " + configDir);
+            }
+        }
+        return configFile;
     }
 }
