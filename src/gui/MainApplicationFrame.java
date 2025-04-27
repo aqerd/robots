@@ -36,7 +36,7 @@ public class MainApplicationFrame extends JFrame {
         addWindow(gameWindow);
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
-        restoreInternalFramesGeometry(this, configProperties, desktopPane);
+        restoreInternalFramesGeometryAndState(desktopPane, configProperties);
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
