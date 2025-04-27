@@ -11,6 +11,7 @@ import java.util.Properties;
 import static gui.MainApplicationFrame.loadFile;
 
 public class WindowState {
+    // TODO-DONE перенести в другой файл
     public static void saveWindowConfiguration(JFrame mainFrame, JDesktopPane desktopPane) {
         Properties props = new Properties();
         props.setProperty("MainFrame.extendedState", String.valueOf(mainFrame.getExtendedState()));

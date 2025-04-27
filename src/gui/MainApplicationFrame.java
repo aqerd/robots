@@ -24,6 +24,24 @@ public class MainApplicationFrame extends JFrame {
     private static final String CONFIG_FILE_NAME = "state-save.properties";
     private Properties configProperties = new Properties();
 
+    private void logActiveThreads(String prefix) {
+        ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
+        ThreadGroup parentGroup;
+        while ((parentGroup = rootGroup.getParent()) != null) {
+            rootGroup = parentGroup;
+        }
+
+        Thread[] threads = new Thread[rootGroup.activeCount()];
+        int count = rootGroup.enumerate(threads, true);
+
+        Logger.debug(prefix + " - Active threads:");
+        for (int i = 0; i < count; i++) {
+            Thread t = threads[i];
+            Logger.debug("  " + t.getName() + " (Daemon: " + t.isDaemon() + ", State: " + t.getState() + ")");
+        }
+    }
+
+
     public MainApplicationFrame() {
         setRussianLocale();
         loadWindowConfiguration(this, configProperties);
@@ -38,6 +56,7 @@ public class MainApplicationFrame extends JFrame {
         addWindow(logWindow);
         restoreInternalFramesGeometryAndState(desktopPane, configProperties);
         setJMenuBar(generateMenuBar());
+        // Изменяем поведение при закрытии по умолчанию
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         addComponentListener(new ComponentAdapter() {
@@ -186,7 +205,6 @@ public class MainApplicationFrame extends JFrame {
         JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_Q);
         exitItem.setToolTipText("Закрыть приложение");
         exitItem.addActionListener(e -> handleExit());
-        appMenu.add(exitItem);
         return appMenu;
     }
 
@@ -200,7 +218,27 @@ public class MainApplicationFrame extends JFrame {
         );
         if (result == JOptionPane.YES_OPTION) {
             saveWindowConfiguration(this, desktopPane);
-            System.exit(0); // TODO сделать безопаснее (не очень хорошо когда оно так неожиданно прерывает работу)
+            // Здесь можно добавить логику для завершения ваших фоновых потоков, если они есть
+            Logger.debug("Saving configuration and exiting...");
+
+            // Добавьте задержку для проверки лога потоков
+            try {
+                Thread.sleep(100); // Дать потокам время на завершение и логирование
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            logActiveThreads("Before dispose() and delay"); // Логируем после задержки
+
+            setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dispose(); // TODO-DONE сделать безопаснее (не очень хорошо когда оно так неожиданно прерывает работу)
+
+
+            logActiveThreads("After dispose() and delay");
+            // Если после dispose() и logActiveThreads() приложение все еще не завершается,
+            // и вы уверены, что все критические операции завершены,
+            // можно использовать System.exit(0) как последнее средство.
+            // НО ТОЛЬКО ЕСЛИ ВЫ УВЕРЕНЫ, что нет потери данных или других проблем.
+            System.exit(0); // Добавляем System.exit(0) снова
         }
     }
 
