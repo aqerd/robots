@@ -8,9 +8,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.*;
 import javax.swing.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -36,12 +33,12 @@ public class MainApplicationFrame extends JFrame {
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
         setContentPane(desktopPane);
-        loadWindowConfiguration(configProperties);
+        loadWindowConfiguration(this, configProperties);
         GameWindow gameWindow = new GameWindow();
         addWindow(gameWindow);
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
-        restoreInternalFramesGeometry(configProperties, desktopPane);
+        restoreInternalFramesGeometry(this, configProperties, desktopPane);
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -205,7 +202,7 @@ public class MainApplicationFrame extends JFrame {
                 JOptionPane.QUESTION_MESSAGE
         );
         if (result == JOptionPane.YES_OPTION) {
-            saveWindowConfiguration(desktopPane);
+            saveWindowConfiguration(this, desktopPane);
             System.exit(0); // TODO сделать безопаснее (не очень хорошо когда оно так неожиданно прерывает работу)
         }
     }

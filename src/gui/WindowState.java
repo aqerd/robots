@@ -10,20 +10,19 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static gui.MainApplicationFrame.loadFile;
-import static java.lang.Math.round;
 
 public class WindowState {
     // TODO вынести в другой файл
     public static void saveWindowConfiguration(JFrame mainFrame, JDesktopPane desktopPane) {
         Properties props = new Properties();
 
-        props.setProperty("MainFrame.extendedState", String.valueOf(getExtendedState()));
+        props.setProperty("MainFrame.extendedState", String.valueOf(mainFrame.getExtendedState()));
 
-        setExtendedState(JFrame.NORMAL);
-        props.setProperty("MainFrame.x", String.valueOf(getX()));
-        props.setProperty("MainFrame.y", String.valueOf(getY()));
-        props.setProperty("MainFrame.width", String.valueOf(getWidth()));
-        props.setProperty("MainFrame.height", String.valueOf(getHeight()));
+        mainFrame.setExtendedState(JFrame.NORMAL);
+        props.setProperty("MainFrame.x", String.valueOf(mainFrame.getX()));
+        props.setProperty("MainFrame.y", String.valueOf(mainFrame.getY()));
+        props.setProperty("MainFrame.width", String.valueOf(mainFrame.getWidth()));
+        props.setProperty("MainFrame.height", String.valueOf(mainFrame.getHeight()));
 
         JInternalFrame[] frames = desktopPane.getAllFrames();
         for (int i = 0; i < frames.length; i++) {
@@ -55,7 +54,7 @@ public class WindowState {
         }
     }
 
-    public static void loadWindowConfiguration(Properties configProperties) {
+    public static void loadWindowConfiguration(JFrame mainFrame, Properties configProperties) {
         File configFile = loadFile();
         if (!configFile.exists()) {
             Logger.debug("Конфигурационный файл отсутствует. Используются настройки по умолчанию.");
@@ -78,15 +77,15 @@ public class WindowState {
             int w = Integer.parseInt(configProperties.getProperty("MainFrame.width", "800"));
             int h = Integer.parseInt(configProperties.getProperty("MainFrame.height", "600"));
 
-            setBounds(x, y, w, h);
-            setExtendedState(savedExtendedState);
+            mainFrame.setBounds(x, y, w, h);
+            mainFrame.setExtendedState(savedExtendedState);
         } catch (NumberFormatException e) {
             Logger.error("Неверный формат данных в конфигурационном файле: " + e.getMessage());
         }
     }
 
-    // TODO custom interface for new internal windows
-    public static void restoreInternalFramesGeometry(Properties configProperties, JDesktopPane desktopPane) {
+    // TODO сделать интерфейс для этого потому что не оч хорошо когда отдельно нужно строить окно для каждого (custom interface for new internal windows)
+    public static void restoreInternalFramesGeometry(JFrame mainFrame, Properties configProperties, JDesktopPane desktopPane) {
         if (configProperties == null) {
             return;
         }
