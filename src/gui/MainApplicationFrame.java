@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Properties;
 import static gui.WindowState.*;
 import static java.lang.Math.round;
+import entity.Robot;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
@@ -23,6 +24,7 @@ public class MainApplicationFrame extends JFrame {
     private static final String CONFIG_ROOT = ".robots-oop";
     private static final String CONFIG_FILE_NAME = "state-save.properties";
     private Properties configProperties = new Properties();
+    private Robot robotModel;
 
     public MainApplicationFrame() {
         setRussianLocale();
@@ -32,10 +34,17 @@ public class MainApplicationFrame extends JFrame {
         Rectangle screenBounds = gd.getDefaultConfiguration().getBounds();
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         setContentPane(desktopPane);
+        double initialX = 100.0;
+        double initialY = 100.0;
+        double initialDirection = 0.0;
+        this.robotModel = new Robot(initialX, initialY, initialDirection);
         GameWindow gameWindow = new GameWindow();
         addWindow(gameWindow);
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
+        CoordinatesWindow coordinatesWindow = new CoordinatesWindow(this.robotModel);
+        coordinatesWindow.setLocation(320, 10);
+        addWindow(coordinatesWindow);
         restoreInternalFramesGeometryAndState(desktopPane, configProperties);
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -43,6 +52,11 @@ public class MainApplicationFrame extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+                if (oldWidth <= 0 || oldHeight <= 0) {
+                    oldWidth = desktopPane.getWidth();
+                    oldHeight = desktopPane.getHeight();
+                    if (oldWidth == 0 || oldHeight == 0) return;
+                }
                 resizeInternalFrames();
             }
         });
@@ -51,6 +65,14 @@ public class MainApplicationFrame extends JFrame {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
                 handleExit();
+            }
+        });
+
+        SwingUtilities.invokeLater(() -> {
+            if (getWidth() > 0 && getHeight() > 0 && (oldWidth <= 0 || oldHeight <=0)) {
+                oldWidth = desktopPane.getWidth();
+                oldHeight = desktopPane.getHeight();
+                Logger.debug("Initial desktopPane size set for resizing: ("+oldWidth+", "+oldHeight+")");
             }
         });
     }

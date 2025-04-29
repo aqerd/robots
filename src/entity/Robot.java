@@ -1,47 +1,26 @@
 package entity;
 
-public class Robot {
+import java.util.Observable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Robot extends Observable {
+
     private double positionX;
     private double positionY;
     private double direction;
-    private static final double MAX_VELOCITY = 0.1;
-    private static final double MAX_ANGULAR_VELOCITY = 0.001;
+    private List<Double> pathX;
+    private List<Double> pathY;
+    private static final double MAX_VELOCITY = 5.0;
+    private static final double MAX_ANGULAR_VELOCITY = 0.1;
 
     public Robot(double x, double y, double direction) {
         this.positionX = x;
         this.positionY = y;
         this.direction = direction;
-    }
-
-    public void move(double velocity, double angularVelocity, double duration, int panelWidth, int panelHeight) {
-        velocity = applyLimits(velocity, 0, MAX_VELOCITY);
-        angularVelocity = applyLimits(angularVelocity, -MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
-
-        double newX = positionX + velocity * duration * Math.cos(direction);
-        double newY = positionY + velocity * duration * Math.sin(direction);
-
-        if (newX < 0) newX = panelWidth;
-        if (newX > panelWidth) newX = 0;
-        if (newY < 0) newY = panelHeight;
-        if (newY > panelHeight) newY = 0;
-
-        positionX = newX;
-        positionY = newY;
-        direction = asNormalizedRadians(direction + angularVelocity * duration);
-    }
-
-    private double applyLimits(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    private double asNormalizedRadians(double angle) {
-        while (angle < 0) {
-            angle += 2 * Math.PI;
-        }
-        while (angle >= 2 * Math.PI) {
-            angle -= 2 * Math.PI;
-        }
-        return angle;
+        this.pathX = new ArrayList<>();
+        this.pathY = new ArrayList<>();
+        addPath(x, y);
     }
 
     public double getPositionX() {
@@ -54,6 +33,77 @@ public class Robot {
 
     public double getDirection() {
         return direction;
+    }
+
+    public List<Double> getPathX() {
+        return pathX;
+    }
+
+    public List<Double> getPathY() {
+        return pathY;
+    }
+
+    private void addPath(double x, double y) {
+        this.pathX.add(x);
+        this.pathY.add(y);
+    }
+
+    public void move(double distance) {
+        move(distance, 0, 10, 0, 0);
+    }
+
+    public void move(double distance, double angularVelocity, int time, int panelWidth, int panelHeight) {
+        double newX = positionX + distance * Math.cos(direction);
+        double newY = positionY + distance * Math.sin(direction);
+
+        if (newX < 0) {
+            newX = 0;
+        }
+        if (newY < 0) {
+            newY = 0;
+        }
+        if (newX > panelWidth) {
+            newX = panelWidth;
+        }
+        if (newY > panelHeight) {
+            newY = panelHeight;
+        }
+
+        positionX = newX;
+        positionY = newY;
+        direction += angularVelocity * time;
+        addPath(newX, newY);
+        setChanged();
+        notifyObservers();
+    }
+
+    public void turnLeft(double angle) {
+        direction += angle;
+        setChanged();
+        notifyObservers();
+    }
+
+    public void turnRight(double angle) {
+        direction -= angle;
+        setChanged();
+        notifyObservers();
+    }
+
+    public void setPosition(double x, double y, double direction) {
+        this.positionX = x;
+        this.positionY = y;
+        this.direction = direction;
+        addPath(x, y);
+        setChanged();
+        notifyObservers();
+    }
+
+    public void resetPath() {
+        this.pathX.clear();
+        this.pathY.clear();
+        addPath(positionX, positionY);
+        setChanged();
+        notifyObservers();
     }
 
     public static double getMaxVelocity() {
