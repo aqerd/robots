@@ -1,116 +1,60 @@
 package entity;
 
+import java.awt.*;
 import java.util.Observable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Robot extends Observable {
+    private volatile double robotX = 100;
+    private volatile double robotY = 100;
+    private volatile double robotDirection = 0;
 
-    private double positionX;
-    private double positionY;
-    private double direction;
-    private List<Double> pathX;
-    private List<Double> pathY;
-    private static final double MAX_VELOCITY = 5.0;
-    private static final double MAX_ANGULAR_VELOCITY = 0.1;
+    private volatile double targetX = 150;
+    private volatile double targetY = 100;
 
-    public Robot(double x, double y, double direction) {
-        this.positionX = x;
-        this.positionY = y;
-        this.direction = direction;
-        this.pathX = new ArrayList<>();
-        this.pathY = new ArrayList<>();
-        addPath(x, y);
+    private static final double maxVelocity = 0.1;
+    private static final double maxAngularVelocity = 0.005;
+
+    public Robot() {
+        Timer timer = new Timer("Robot model updater", true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                updateModel();
+            }
+        }, 0, 10);
     }
 
-    public double getPositionX() {
-        return positionX;
-    }
+    private void updateModel() {
+        double distance = Point.distance(robotX, robotY, targetX, targetY);
+        if (distance < 0.5) return;
 
-    public double getPositionY() {
-        return positionY;
-    }
+        double angleToTarget = Math.atan2(targetY - robotY, targetX - robotX);
+        double angularVelocity = angleToTarget - robotDirection;
 
-    public double getDirection() {
-        return direction;
-    }
+        angularVelocity = Math.atan2(Math.sin(angularVelocity), Math.cos(angularVelocity));
 
-    public List<Double> getPathX() {
-        return pathX;
-    }
+        robotDirection += Math.max(-maxAngularVelocity, Math.min(maxAngularVelocity, angularVelocity));
 
-    public List<Double> getPathY() {
-        return pathY;
-    }
+        robotX += maxVelocity * Math.cos(robotDirection);
+        robotY += maxVelocity * Math.sin(robotDirection);
 
-    private void addPath(double x, double y) {
-        this.pathX.add(x);
-        this.pathY.add(y);
-    }
-
-    public void move(double distance) {
-        move(distance, 0, 10, 0, 0);
-    }
-
-    public void move(double distance, double angularVelocity, int time, int panelWidth, int panelHeight) {
-        double newX = positionX + distance * Math.cos(direction);
-        double newY = positionY + distance * Math.sin(direction);
-
-        if (newX < 0) {
-            newX = 0;
-        }
-        if (newY < 0) {
-            newY = 0;
-        }
-        if (newX > panelWidth) {
-            newX = panelWidth;
-        }
-        if (newY > panelHeight) {
-            newY = panelHeight;
-        }
-
-        positionX = newX;
-        positionY = newY;
-        direction += angularVelocity * time;
-        addPath(newX, newY);
         setChanged();
         notifyObservers();
     }
 
-    public void turnLeft(double angle) {
-        direction += angle;
+    public synchronized double getRobotX() { return robotX; }
+    public synchronized double getRobotY() { return robotY; }
+    public synchronized double getRobotDirection() { return robotDirection; }
+
+    public synchronized double getTargetX() { return targetX; }
+    public synchronized double getTargetY() { return targetY; }
+
+    public synchronized void setTargetPosition(Point p) {
+        this.targetX = p.x;
+        this.targetY = p.y;
         setChanged();
         notifyObservers();
-    }
-
-    public void turnRight(double angle) {
-        direction -= angle;
-        setChanged();
-        notifyObservers();
-    }
-
-    public void setPosition(double x, double y, double direction) {
-        this.positionX = x;
-        this.positionY = y;
-        this.direction = direction;
-        addPath(x, y);
-        setChanged();
-        notifyObservers();
-    }
-
-    public void resetPath() {
-        this.pathX.clear();
-        this.pathY.clear();
-        addPath(positionX, positionY);
-        setChanged();
-        notifyObservers();
-    }
-
-    public static double getMaxVelocity() {
-        return MAX_VELOCITY;
-    }
-
-    public static double getMaxAngularVelocity() {
-        return MAX_ANGULAR_VELOCITY;
     }
 }
