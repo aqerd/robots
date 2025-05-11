@@ -2,11 +2,28 @@ package localization.languages;
 
 import localization.Localizer;
 
-import javax.swing.UIManager;
+import java.util.Map;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 
 public class English implements Localizer {
     private static final Logger LOG = Logger.getLogger(English.class.getName());
+    private static final Map<String, String> texts = Map.of(
+            "file", "File",
+            "close", "Close",
+            "viewMode", "View Mode",
+            "systemScheme", "System Scheme",
+            "universalScheme", "Cross-platform Scheme",
+            "tests", "Tests",
+            "logMessage", "Log Message",
+            "confirmExit", "Are you sure you want to exit?",
+            "language", "Language"
+    );
+
+    @Override
+    public String getText(String key) {
+        return texts.getOrDefault(key, key);
+    }
 
     @Override
     public final void apply() {
@@ -41,36 +58,47 @@ public class English implements Localizer {
         UIManager.put("ColorChooser.rgbNameText", "RGB");
         UIManager.put("ColorChooser.rgbRedMnemonic", "68");
         UIManager.put("ColorChooser.rgbRedText", "Red");
-        UIManager.put("ColorChooser.sampleText", "Sample text Sample text");
+        UIManager.put("ColorChooser.sampleText", "Sample text");
         UIManager.put("ColorChooser.swatchesDisplayedMnemonicIndex", "0");
         UIManager.put("ColorChooser.swatchesMnemonic", "83");
         UIManager.put("ColorChooser.swatchesNameText", "Swatches");
         UIManager.put("ColorChooser.swatchesRecentText", "Recent:");
         UIManager.put("ComboBox.togglePopupText", "Toggle list");
         UIManager.put("FileChooser.acceptAllFileFilterText", "All files");
-        UIManager.put("FileChooser.cancelButtonMnemonic", "67");
         UIManager.put("FileChooser.cancelButtonText", "Cancel");
         UIManager.put("FileChooser.cancelButtonToolTipText", "Close dialog");
         UIManager.put("FileChooser.directoryDescriptionText", "Folder");
-        UIManager.put("FileChooser.directoryOpenButtonMnemonic", "79");
         UIManager.put("FileChooser.directoryOpenButtonText", "Open");
         UIManager.put("FileChooser.directoryOpenButtonToolTipText", "Open selected folder");
         UIManager.put("FileChooser.fileDescriptionText", "All files");
-        UIManager.put("FileChooser.helpButtonMnemonic", "72");
         UIManager.put("FileChooser.helpButtonText", "Help");
         UIManager.put("FileChooser.helpButtonToolTipText", "Show help");
         UIManager.put("FileChooser.newFolderErrorText", "Error creating directory");
-        UIManager.put("FileChooser.openButtonMnemonic", "79");
         UIManager.put("FileChooser.openButtonText", "Open");
         UIManager.put("FileChooser.openButtonToolTipText", "Open selected file");
         UIManager.put("FileChooser.openDialogTitleText", "Open");
-        UIManager.put("FileChooser.saveButtonMnemonic", "83");
         UIManager.put("FileChooser.saveButtonText", "Save");
         UIManager.put("FileChooser.saveButtonToolTipText", "Save selected file");
         UIManager.put("FileChooser.saveDialogTitleText", "Save");
-        UIManager.put("FileChooser.updateButtonMnemonic", "85");
         UIManager.put("FileChooser.updateButtonText", "Update");
         UIManager.put("FileChooser.updateButtonToolTipText", "Update folder list");
+        UIManager.put("FileChooser.detailsViewActionLabelText", "Details");
+        UIManager.put("FileChooser.fileAttrHeaderText", "Attributes");
+        UIManager.put("FileChooser.fileDateHeaderText", "Modified");
+        UIManager.put("FileChooser.fileNameHeaderText", "Name");
+        UIManager.put("FileChooser.fileNameLabelText", "File name:");
+        UIManager.put("FileChooser.fileSizeHeaderText", "Size");
+        UIManager.put("FileChooser.fileTypeHeaderText", "Type");
+        UIManager.put("FileChooser.filesOfTypeLabelText", "File types:");
+        UIManager.put("FileChooser.homeFolderAccessibleName", "Home");
+        UIManager.put("FileChooser.listViewActionLabelText", "List");
+        UIManager.put("FileChooser.lookInLabelText", "Look in:");
+        UIManager.put("FileChooser.newFolderAccessibleName", "New folder");
+        UIManager.put("FileChooser.newFolderToolTipText", "Create new folder");
+        UIManager.put("FileChooser.refreshActionLabelText", "Refresh");
+        UIManager.put("FileChooser.saveInLabelText", "Save in:");
+        UIManager.put("FileChooser.upFolderToolTipText", "Up one level");
+        UIManager.put("FileChooser.viewMenuLabelText", "View");
         UIManager.put("FormView.browseFileButtonText", "Browse...");
         UIManager.put("FormView.resetButtonText", "Reset");
         UIManager.put("FormView.submitButtonText", "Submit");
@@ -87,58 +115,24 @@ public class English implements Localizer {
         UIManager.put("InternalFrameTitlePane.moveButtonText", "Move");
         UIManager.put("InternalFrameTitlePane.restoreButtonText", "Restore");
         UIManager.put("InternalFrameTitlePane.sizeButtonText", "Size");
-        UIManager.put("OptionPane.cancelButtonMnemonic", "0");
+        UIManager.put("MetalTitlePane.closeTitle", "Close");
+        UIManager.put("MetalTitlePane.iconifyTitle", "Minimize");
+        UIManager.put("MetalTitlePane.maximizeTitle", "Maximize");
+        UIManager.put("MetalTitlePane.restoreTitle", "Restore");
         UIManager.put("OptionPane.cancelButtonText", "Cancel");
         UIManager.put("OptionPane.inputDialogTitle", "Input");
         UIManager.put("OptionPane.messageDialogTitle", "Message");
-        UIManager.put("OptionPane.noButtonMnemonic", "78");
         UIManager.put("OptionPane.noButtonText", "No");
-        UIManager.put("OptionPane.okButtonMnemonic", "0");
         UIManager.put("OptionPane.okButtonText", "OK");
         UIManager.put("OptionPane.titleText", "Choose a value");
-        UIManager.put("OptionPane.yesButtonMnemonic", "89");
         UIManager.put("OptionPane.yesButtonText", "Yes");
-        UIManager.put("PrintingDialog.abortButtonDisplayedMnemonicIndex", "0");
-        UIManager.put("PrintingDialog.abortButtonMnemonic", "65");
         UIManager.put("PrintingDialog.abortButtonText", "Abort");
         UIManager.put("PrintingDialog.abortButtonToolTipText", "Abort printing");
         UIManager.put("PrintingDialog.contentAbortingText", "Aborting printing...");
         UIManager.put("PrintingDialog.contentInitialText", "Printing in progress...");
         UIManager.put("PrintingDialog.titleProgressText", "Printing");
         UIManager.put("ProgressMonitor.progressText", "Process...");
-        UIManager.put("SplitPane.leftButtonText", "left button");
-        UIManager.put("SplitPane.rightButtonText", "right button");
-        UIManager.put("FileChooser.detailsViewActionLabelText", "Table");
-        UIManager.put("FileChooser.detailsViewButtonAccessibleName", "Table");
-        UIManager.put("FileChooser.detailsViewButtonToolTipText", "Table");
-        UIManager.put("FileChooser.fileAttrHeaderText", "Attributes");
-        UIManager.put("FileChooser.fileDateHeaderText", "Modified");
-        UIManager.put("FileChooser.fileNameHeaderText", "Name");
-        UIManager.put("FileChooser.fileNameLabelText", "File name:");
-        UIManager.put("FileChooser.fileSizeHeaderText", "Size");
-        UIManager.put("FileChooser.fileTypeHeaderText", "Type");
-        UIManager.put("FileChooser.filesOfTypeLabelText", "File types:");
-        UIManager.put("FileChooser.homeFolderAccessibleName", "Home");
-        UIManager.put("FileChooser.homeFolderToolTipText", "Home");
-        UIManager.put("FileChooser.listViewActionLabelText", "List");
-        UIManager.put("FileChooser.listViewButtonAccessibleName", "List");
-        UIManager.put("FileChooser.listViewButtonToolTipText", "List");
-        UIManager.put("FileChooser.lookInLabelText", "Look in:");
-        UIManager.put("FileChooser.newFolderAccessibleName", "New folder");
-        UIManager.put("FileChooser.newFolderActionLabelText", "New folder");
-        UIManager.put("FileChooser.newFolderToolTipText", "Create new folder");
-        UIManager.put("FileChooser.refreshActionLabelText", "Refresh");
-        UIManager.put("FileChooser.saveInLabelText", "Save in:");
-        UIManager.put("FileChooser.upFolderAccessibleName", "Up");
-        UIManager.put("FileChooser.upFolderToolTipText", "Up one level");
-        UIManager.put("FileChooser.viewMenuLabelText", "View");
-        UIManager.put("MetalTitlePane.closeMnemonic", "67");
-        UIManager.put("MetalTitlePane.closeTitle", "Close");
-        UIManager.put("MetalTitlePane.iconifyMnemonic", "69");
-        UIManager.put("MetalTitlePane.iconifyTitle", "Minimize");
-        UIManager.put("MetalTitlePane.maximizeMnemonic", "88");
-        UIManager.put("MetalTitlePane.maximizeTitle", "Maximize");
-        UIManager.put("MetalTitlePane.restoreMnemonic", "82");
-        UIManager.put("MetalTitlePane.restoreTitle", "Restore");
+        UIManager.put("SplitPane.leftButtonText", "Left button");
+        UIManager.put("SplitPane.rightButtonText", "Right button");
     }
 }

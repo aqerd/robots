@@ -19,8 +19,12 @@ public class LocalizationManager {
         localizers.put(locale, localizer);
     }
 
+    public static Localizer getLocalizer(Locale locale) {
+        return localizers.get(locale);
+    }
+
     public static void applyLocalization(Locale locale) {
-        Localizer localizer = localizers.get(locale);
+        Localizer localizer = getLocalizer(locale);
         if (localizer != null) {
             localizer.apply();
         }

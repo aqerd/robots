@@ -20,12 +20,14 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import localization.LocalizationManager;
+import localization.Localizer;
 import log.Logger;
 import entity.Robot;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final Map<String, StatefulWindow> windows = new HashMap<>();
+    private final Localizer localizer = LocalizationManager.getLocalizer(Locale.getDefault());
 
     public MainApplicationFrame() {
         LocalizationManager.applyLocalization(Locale.getDefault());
@@ -41,12 +43,10 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = createLogWindow();
         addStatefulWindow(logWindow);
 
-        // Создание и добавление окна с визуализацией игры
         GameVisualizer visualizer = new GameVisualizer(robotModel);
         GameWindow gameWindow = new GameWindow(visualizer);
         addStatefulWindow(gameWindow);
 
-        // Создание и добавление окна с координатами робота
         CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robotModel);
         addStatefulWindow(coordinatesWindow);
 
@@ -91,30 +91,30 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu fileMenu = new JMenu("Файл");
+        JMenu fileMenu = new JMenu(localizer.getText("file"));
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem close = new JMenuItem("Закрыть", KeyEvent.VK_C);
+        JMenuItem close = new JMenuItem(localizer.getText("close"), KeyEvent.VK_C);
         close.addActionListener((event) -> closeHandler());
         fileMenu.add(close);
 
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+        JMenu lookAndFeelMenu = new JMenu(localizer.getText("viewMode"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
+        JMenuItem systemLookAndFeel = new JMenuItem(localizer.getText("systemScheme"), KeyEvent.VK_S);
         systemLookAndFeel.addActionListener((event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
         });
         lookAndFeelMenu.add(systemLookAndFeel);
-        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_U);
+        JMenuItem crossplatformLookAndFeel = new JMenuItem(localizer.getText("universalScheme"), KeyEvent.VK_U);
         crossplatformLookAndFeel.addActionListener((event) -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
         });
         lookAndFeelMenu.add(crossplatformLookAndFeel);
 
-        JMenu testMenu = new JMenu("Тесты");
+        JMenu testMenu = new JMenu(localizer.getText("tests"));
         testMenu.setMnemonic(KeyEvent.VK_T);
-        JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
+        JMenuItem addLogMessageItem = new JMenuItem(localizer.getText("logMessage"), KeyEvent.VK_S);
         addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
         testMenu.add(addLogMessageItem);
 
@@ -128,7 +128,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private JMenu createLanguageMenu() {
-        JMenu languageMenu = new JMenu("Language");
+        JMenu languageMenu = new JMenu(localizer.getText("language"));
         languageMenu.setMnemonic(KeyEvent.VK_L);
 
         for (Locale locale : LocalizationManager.getAvailableLocales()) {
@@ -150,7 +150,7 @@ public class MainApplicationFrame extends JFrame {
             SwingUtilities.updateComponentTreeUI(this);
         } catch (ClassNotFoundException | InstantiationException
                  | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            // just ignore
+            // ignore
         }
     }
 }

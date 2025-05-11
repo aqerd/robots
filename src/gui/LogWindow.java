@@ -57,8 +57,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
         props.setProperty(getWindowId() + ".height", String.valueOf(getHeight()));
         props.setProperty(getWindowId() + ".isIcon", String.valueOf(isIcon()));
         props.setProperty(getWindowId() + ".isMaximum", String.valueOf(isMaximum()));
-
-        // Тут в будущем можно будет добавить сохранение состояния логов, если понадобится
     }
 
     @Override
@@ -77,7 +75,5 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-
-        // Тут в будущем можно будет добавить загрузку состояния логов, если понадобится
     }
 }

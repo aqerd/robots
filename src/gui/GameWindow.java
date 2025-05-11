@@ -32,7 +32,6 @@ public class GameWindow extends JInternalFrame implements StatefulWindow {
         props.setProperty(getWindowId() + ".isIcon", String.valueOf(isIcon()));
         props.setProperty(getWindowId() + ".isMaximum", String.valueOf(isMaximum()));
 
-        // Например, потом тут можно добавить сохранение состояния визуализатора (позиция робота)
     }
 
     @Override

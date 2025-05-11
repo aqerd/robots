@@ -2,11 +2,28 @@ package localization.languages;
 
 import localization.Localizer;
 
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 
 public class Russian implements Localizer {
     private static final Logger LOG = Logger.getLogger(Russian.class.getName());
+    private static final Map<String, String> texts = Map.of(
+            "file", "Файл",
+            "close", "Закрыть",
+            "viewMode", "Режим отображения",
+            "systemScheme", "Системная схема",
+            "universalScheme", "Универсальная схема",
+            "tests", "Тесты",
+            "logMessage", "Сообщение в лог",
+            "confirmExit", "Вы уверены, что хотите выйти?",
+            "language", "Язык"
+    );
+
+    @Override
+    public String getText(String key) {
+        return texts.getOrDefault(key, key);
+    }
 
     @Override
     public final void apply() {
@@ -41,7 +58,7 @@ public class Russian implements Localizer {
         UIManager.put("ColorChooser.rgbNameText", "RGB");
         UIManager.put("ColorChooser.rgbRedMnemonic", "68");
         UIManager.put("ColorChooser.rgbRedText", "Красный");
-        UIManager.put("ColorChooser.sampleText", "Пример текста Пример текста");
+        UIManager.put("ColorChooser.sampleText", "Пример текста");
         UIManager.put("ColorChooser.swatchesDisplayedMnemonicIndex", "0");
         UIManager.put("ColorChooser.swatchesMnemonic", "83");
         UIManager.put("ColorChooser.swatchesNameText", "Палитра");
@@ -71,43 +88,6 @@ public class Russian implements Localizer {
         UIManager.put("FileChooser.updateButtonMnemonic", "85");
         UIManager.put("FileChooser.updateButtonText", "Обновить");
         UIManager.put("FileChooser.updateButtonToolTipText", "Обновить список директорий");
-        UIManager.put("FormView.browseFileButtonText", "Просмотр...");
-        UIManager.put("FormView.resetButtonText", "Сброс");
-        UIManager.put("FormView.submitButtonText", "Отправить запрос");
-        UIManager.put("InternalFrame.closeButtonToolTip", "Закрыть");
-        UIManager.put("InternalFrame.iconButtonToolTip", "Свернуть");
-        UIManager.put("InternalFrame.maxButtonToolTip", "Развернуть");
-        UIManager.put("InternalFrame.restoreButtonToolTip", "Восстановить");
-        UIManager.put("InternalFrameTitlePane.closeButtonAccessibleName", "Закрыть");
-        UIManager.put("InternalFrameTitlePane.closeButtonText", "Закрыть");
-        UIManager.put("InternalFrameTitlePane.iconifyButtonAccessibleName", "Свернуть");
-        UIManager.put("InternalFrameTitlePane.maximizeButtonAccessibleName", "Развернуть");
-        UIManager.put("InternalFrameTitlePane.maximizeButtonText", "Развернуть");
-        UIManager.put("InternalFrameTitlePane.minimizeButtonText", "Свернуть");
-        UIManager.put("InternalFrameTitlePane.moveButtonText", "Переместить");
-        UIManager.put("InternalFrameTitlePane.restoreButtonText", "Восстановить");
-        UIManager.put("InternalFrameTitlePane.sizeButtonText", "Размер");
-        UIManager.put("OptionPane.cancelButtonMnemonic", "0");
-        UIManager.put("OptionPane.cancelButtonText", "Отмена");
-        UIManager.put("OptionPane.inputDialogTitle", "Ввод");
-        UIManager.put("OptionPane.messageDialogTitle", "Сообщение");
-        UIManager.put("OptionPane.noButtonMnemonic", "78");
-        UIManager.put("OptionPane.noButtonText", "Нет");
-        UIManager.put("OptionPane.okButtonMnemonic", "0");
-        UIManager.put("OptionPane.okButtonText", "OK");
-        UIManager.put("OptionPane.titleText", "Выберите значение");
-        UIManager.put("OptionPane.yesButtonMnemonic", "89");
-        UIManager.put("OptionPane.yesButtonText", "Да");
-        UIManager.put("PrintingDialog.abortButtonDisplayedMnemonicIndex", "0");
-        UIManager.put("PrintingDialog.abortButtonMnemonic", "65");
-        UIManager.put("PrintingDialog.abortButtonText", "Прервать");
-        UIManager.put("PrintingDialog.abortButtonToolTipText", "Прервать печать");
-        UIManager.put("PrintingDialog.contentAbortingText", "Прерывание печати...");
-        UIManager.put("PrintingDialog.contentInitialText", "Идет печать...");
-        UIManager.put("PrintingDialog.titleProgressText", "Печать");
-        UIManager.put("ProgressMonitor.progressText", "Процесс...");
-        UIManager.put("SplitPane.leftButtonText", "Левая кнопка");
-        UIManager.put("SplitPane.rightButtonText", "Правая кнопка");
         UIManager.put("FileChooser.detailsViewActionLabelText", "Таблица");
         UIManager.put("FileChooser.detailsViewButtonAccessibleName", "Таблица");
         UIManager.put("FileChooser.detailsViewButtonToolTipText", "Таблица");
@@ -132,6 +112,22 @@ public class Russian implements Localizer {
         UIManager.put("FileChooser.upFolderAccessibleName", "Вверх");
         UIManager.put("FileChooser.upFolderToolTipText", "Вверх на один уровень");
         UIManager.put("FileChooser.viewMenuLabelText", "Просмотр");
+        UIManager.put("FormView.browseFileButtonText", "Просмотр...");
+        UIManager.put("FormView.resetButtonText", "Сброс");
+        UIManager.put("FormView.submitButtonText", "Отправить запрос");
+        UIManager.put("InternalFrame.closeButtonToolTip", "Закрыть");
+        UIManager.put("InternalFrame.iconButtonToolTip", "Свернуть");
+        UIManager.put("InternalFrame.maxButtonToolTip", "Развернуть");
+        UIManager.put("InternalFrame.restoreButtonToolTip", "Восстановить");
+        UIManager.put("InternalFrameTitlePane.closeButtonAccessibleName", "Закрыть");
+        UIManager.put("InternalFrameTitlePane.closeButtonText", "Закрыть");
+        UIManager.put("InternalFrameTitlePane.iconifyButtonAccessibleName", "Свернуть");
+        UIManager.put("InternalFrameTitlePane.maximizeButtonAccessibleName", "Развернуть");
+        UIManager.put("InternalFrameTitlePane.maximizeButtonText", "Развернуть");
+        UIManager.put("InternalFrameTitlePane.minimizeButtonText", "Свернуть");
+        UIManager.put("InternalFrameTitlePane.moveButtonText", "Переместить");
+        UIManager.put("InternalFrameTitlePane.restoreButtonText", "Восстановить");
+        UIManager.put("InternalFrameTitlePane.sizeButtonText", "Размер");
         UIManager.put("MetalTitlePane.closeMnemonic", "67");
         UIManager.put("MetalTitlePane.closeTitle", "Закрыть");
         UIManager.put("MetalTitlePane.iconifyMnemonic", "69");
@@ -140,5 +136,26 @@ public class Russian implements Localizer {
         UIManager.put("MetalTitlePane.maximizeTitle", "Развернуть");
         UIManager.put("MetalTitlePane.restoreMnemonic", "82");
         UIManager.put("MetalTitlePane.restoreTitle", "Восстановить");
+        UIManager.put("OptionPane.cancelButtonMnemonic", "0");
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        UIManager.put("OptionPane.inputDialogTitle", "Ввод");
+        UIManager.put("OptionPane.messageDialogTitle", "Сообщение");
+        UIManager.put("OptionPane.noButtonMnemonic", "78");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.okButtonMnemonic", "0");
+        UIManager.put("OptionPane.okButtonText", "OK");
+        UIManager.put("OptionPane.titleText", "Выберите значение");
+        UIManager.put("OptionPane.yesButtonMnemonic", "89");
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("PrintingDialog.abortButtonDisplayedMnemonicIndex", "0");
+        UIManager.put("PrintingDialog.abortButtonMnemonic", "65");
+        UIManager.put("PrintingDialog.abortButtonText", "Прервать");
+        UIManager.put("PrintingDialog.abortButtonToolTipText", "Прервать печать");
+        UIManager.put("PrintingDialog.contentAbortingText", "Прерывание печати...");
+        UIManager.put("PrintingDialog.contentInitialText", "Идет печать...");
+        UIManager.put("PrintingDialog.titleProgressText", "Печать");
+        UIManager.put("ProgressMonitor.progressText", "Процесс...");
+        UIManager.put("SplitPane.leftButtonText", "Левая кнопка");
+        UIManager.put("SplitPane.rightButtonText", "Правая кнопка");
     }
 }
