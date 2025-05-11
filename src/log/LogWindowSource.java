@@ -39,7 +39,6 @@ public class LogWindowSource {
             m_messages.add(entry);
         }
 
-        // Defining listeners
         LogChangeListener[] activeListeners = m_activeListeners;
         if (activeListeners == null) {
             synchronized (m_listeners) {

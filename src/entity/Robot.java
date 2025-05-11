@@ -1,66 +1,60 @@
 package entity;
 
-public class Robot {
-    private double positionX;
-    private double positionY;
-    private double direction;
-    private static final double MAX_VELOCITY = 0.1;
-    private static final double MAX_ANGULAR_VELOCITY = 0.001;
+import java.awt.*;
+import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 
-    public Robot(double x, double y, double direction) {
-        this.positionX = x;
-        this.positionY = y;
-        this.direction = direction;
+public class Robot extends Observable {
+    private volatile double robotX = 100;
+    private volatile double robotY = 100;
+    private volatile double robotDirection = 0;
+
+    private volatile double targetX = 150;
+    private volatile double targetY = 100;
+
+    private static final double maxVelocity = 0.1;
+    private static final double maxAngularVelocity = 0.005;
+
+    public Robot() {
+        Timer timer = new Timer("Robot model updater", true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                updateModel();
+            }
+        }, 0, 10);
     }
 
-    public void move(double velocity, double angularVelocity, double duration, int panelWidth, int panelHeight) {
-        velocity = applyLimits(velocity, 0, MAX_VELOCITY);
-        angularVelocity = applyLimits(angularVelocity, -MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+    private void updateModel() {
+        double distance = Point.distance(robotX, robotY, targetX, targetY);
+        if (distance < 0.5) return;
 
-        double newX = positionX + velocity * duration * Math.cos(direction);
-        double newY = positionY + velocity * duration * Math.sin(direction);
+        double angleToTarget = Math.atan2(targetY - robotY, targetX - robotX);
+        double angularVelocity = angleToTarget - robotDirection;
 
-        if (newX < 0) newX = panelWidth;
-        if (newX > panelWidth) newX = 0;
-        if (newY < 0) newY = panelHeight;
-        if (newY > panelHeight) newY = 0;
+        angularVelocity = Math.atan2(Math.sin(angularVelocity), Math.cos(angularVelocity));
 
-        positionX = newX;
-        positionY = newY;
-        direction = asNormalizedRadians(direction + angularVelocity * duration);
+        robotDirection += Math.max(-maxAngularVelocity, Math.min(maxAngularVelocity, angularVelocity));
+
+        robotX += maxVelocity * Math.cos(robotDirection);
+        robotY += maxVelocity * Math.sin(robotDirection);
+
+        setChanged();
+        notifyObservers();
     }
 
-    private double applyLimits(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
-    }
+    public synchronized double getRobotX() { return robotX; }
+    public synchronized double getRobotY() { return robotY; }
+    public synchronized double getRobotDirection() { return robotDirection; }
 
-    private double asNormalizedRadians(double angle) {
-        while (angle < 0) {
-            angle += 2 * Math.PI;
-        }
-        while (angle >= 2 * Math.PI) {
-            angle -= 2 * Math.PI;
-        }
-        return angle;
-    }
+    public synchronized double getTargetX() { return targetX; }
+    public synchronized double getTargetY() { return targetY; }
 
-    public double getPositionX() {
-        return positionX;
-    }
-
-    public double getPositionY() {
-        return positionY;
-    }
-
-    public double getDirection() {
-        return direction;
-    }
-
-    public static double getMaxVelocity() {
-        return MAX_VELOCITY;
-    }
-
-    public static double getMaxAngularVelocity() {
-        return MAX_ANGULAR_VELOCITY;
+    public synchronized void setTargetPosition(Point p) {
+        this.targetX = p.x;
+        this.targetY = p.y;
+        setChanged();
+        notifyObservers();
     }
 }
