@@ -8,10 +8,10 @@ import javax.swing.*;
 import entity.Robot;
 
 public class CoordinatesWindow extends JInternalFrame implements Observer, StatefulWindow {
-    private final JLabel coordinatesLabel = new JLabel("Координаты робота: ");
+    private final JLabel coordinatesLabel = new JLabel("Coordinates");
 
     public CoordinatesWindow(Robot model) {
-        super("Координаты робота", true, true, true, true);
+        super("", true, true, true, true);
         model.addObserver(this);
         setLayout(new BorderLayout());
         add(coordinatesLabel, BorderLayout.CENTER);
@@ -23,13 +23,18 @@ public class CoordinatesWindow extends JInternalFrame implements Observer, State
     @Override
     public void update(Observable o, Object arg) {
         Robot model = (Robot) o;
-        String text = String.format("X: %.2f, Y: %.2f", model.getRobotX(), model.getRobotY());
+        String text = String.format("<html>X = %.2f<br>Y = %.2f</html>", model.getRobotX(), model.getRobotY());
         coordinatesLabel.setText(text);
     }
 
     @Override
     public String getWindowId() {
         return "CoordinatesWindow";
+    }
+
+    @Override
+    public String getTitleKey() {
+        return "coordinatesWindowTitle";
     }
 
     @Override

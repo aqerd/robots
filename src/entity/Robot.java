@@ -13,11 +13,11 @@ public class Robot extends Observable {
     private volatile double targetX = 150;
     private volatile double targetY = 100;
 
-    private static final double maxVelocity = 0.1;
+    private static final double maxVelocity = 1;
     private static final double maxAngularVelocity = 0.005;
 
     public Robot() {
-        Timer timer = new Timer("Robot model updater", true);
+        Timer timer = new Timer("Robot timer", true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

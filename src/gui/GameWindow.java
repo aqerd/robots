@@ -6,11 +6,10 @@ import java.util.Properties;
 import javax.swing.*;
 
 public class GameWindow extends JInternalFrame implements StatefulWindow {
-
     private final GameVisualizer m_visualizer;
 
     public GameWindow(GameVisualizer visualizer) {
-        super("Игровое поле", true, true, true, true);
+        super("", true, true, true, true);
         m_visualizer = visualizer;
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
@@ -21,6 +20,11 @@ public class GameWindow extends JInternalFrame implements StatefulWindow {
     @Override
     public String getWindowId() {
         return "GameWindow";
+    }
+
+    @Override
+    public String getTitleKey() {
+        return "gameWindowTitle";
     }
 
     @Override

@@ -12,12 +12,11 @@ import log.LogEntry;
 import log.LogWindowSource;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener, StatefulWindow {
-
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
 
     public LogWindow(LogWindowSource logSource) {
-        super("Протокол работы", true, true, true, true);
+        super("", true, true, true, true);
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
@@ -50,6 +49,11 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
     }
 
     @Override
+    public String getTitleKey() {
+        return "logWindowTitle";
+    }
+
+    @Override
     public void saveState(Properties props) {
         props.setProperty(getWindowId() + ".x", String.valueOf(getX()));
         props.setProperty(getWindowId() + ".y", String.valueOf(getY()));
@@ -71,7 +75,9 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
         setBounds(x, y, width, height);
         try {
             setIcon(isIcon);
-            setMaximum(isMaximum);
+            if (isMaximum) {
+                setMaximum(true);
+            }
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
