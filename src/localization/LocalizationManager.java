@@ -1,8 +1,6 @@
 package localization;
 
-import localization.languages.English;
-import localization.languages.French;
-import localization.languages.Russian;
+import localization.languages.*;
 
 import java.util.*;
 
@@ -10,9 +8,17 @@ public class LocalizationManager {
     private static final Map<Locale, Localizer> localizers = new LinkedHashMap<>();
 
     static {
-        register(new Locale("ru", "RU"), new Russian());
         register(new Locale("en", "US"), new English());
+        register(new Locale("ru", "RU"), new Russian());
+        register(new Locale("ar", "SA"), new Arabic());
+        register(new Locale("zh", "CN"), new Chinese());
+        register(new Locale("nl", "NL"), new Dutch());
         register(new Locale("fr", "FR"), new French());
+        register(new Locale("de", "DE"), new German());
+        register(new Locale("ja", "JP"), new Japanese());
+        register(new Locale("ko", "KR"), new Korean());
+        register(new Locale("pt", "BR"), new Portuguese());
+        register(new Locale("es", "ES"), new Spanish());
     }
 
     public static void register(Locale locale, Localizer localizer) {

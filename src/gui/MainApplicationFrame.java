@@ -92,8 +92,7 @@ public class MainApplicationFrame extends JFrame {
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         logWindow.setTitle(localizer.getText(logWindow.getTitleKey()));
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
+        logWindow.setBounds(10, 120, 320, 640);
         Logger.debug(localizer.getText("logProtocolWorks"));
         return logWindow;
     }
@@ -101,12 +100,14 @@ public class MainApplicationFrame extends JFrame {
     protected GameWindow createGameWindow(GameVisualizer visualizer) {
         GameWindow gameWindow = new GameWindow(visualizer);
         gameWindow.setTitle(localizer.getText(gameWindow.getTitleKey()));
+        gameWindow.setBounds(340, 10, 1188, 750);
         return gameWindow;
     }
 
     protected CoordinatesWindow createCoordinatesWindow(Robot robot) {
         CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
         coordinatesWindow.setTitle(localizer.getText(coordinatesWindow.getTitleKey()));
+        coordinatesWindow.setBounds(10, 10, 320, 100);
         return coordinatesWindow;
     }
 
