@@ -41,6 +41,6 @@ public class LocalizationManager {
     }
 
     public static String getDisplayName(Locale locale) {
-        return locale.getDisplayLanguage(locale);
+        return locale.getDisplayLanguage(locale).substring(0, 1).toUpperCase() + locale.getDisplayLanguage(locale).substring(1);
     }
 }
