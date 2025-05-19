@@ -1,11 +1,17 @@
 package localization;
 
 import localization.languages.*;
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import java.util.*;
 
+// TODO загрузчик языков и ленивая загрузка
 public class LocalizationManager {
-    private static final Map<Locale, Localizer> localizers = new LinkedHashMap<>();
+    private static final Map<Locale, Localizer> localizers = new ConcurrentHashMap<>();
+    private static final Map<String, MessageFormat> messageFormatCache = new ConcurrentHashMap<>();
 
     static {
         register(new Locale("en", "US"), new English());
@@ -34,6 +40,12 @@ public class LocalizationManager {
         if (localizer != null) {
             localizer.apply();
         }
+    }
+
+    public static String getLocalizedText(String key, Object... params) {
+        String pattern = localizers.get(Locale.getDefault()).getText(key);
+        MessageFormat messageFormat = messageFormatCache.computeIfAbsent(pattern, MessageFormat::new);
+        return messageFormat.format(params);
     }
 
     public static Set<Locale> getAvailableLocales() {

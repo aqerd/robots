@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
+// TODO interface для других роботов
 public class Robot extends Observable {
     private volatile double robotX = 100;
     private volatile double robotY = 100;
@@ -13,8 +14,8 @@ public class Robot extends Observable {
     private volatile double targetX = 150;
     private volatile double targetY = 100;
 
-    private static final double maxVelocity = 1;
-    private static final double maxAngularVelocity = 0.005;
+    private static final double maxVelocity = 1.2;
+    private static final double maxAngularVelocity = 0.01;
 
     public Robot() {
         Timer timer = new Timer("Robot timer", true);
@@ -44,12 +45,25 @@ public class Robot extends Observable {
         notifyObservers();
     }
 
-    public synchronized double getRobotX() { return robotX; }
-    public synchronized double getRobotY() { return robotY; }
-    public synchronized double getRobotDirection() { return robotDirection; }
+    public synchronized double getRobotX() {
+        return robotX;
+    }
 
-    public synchronized double getTargetX() { return targetX; }
-    public synchronized double getTargetY() { return targetY; }
+    public synchronized double getRobotY() {
+        return robotY;
+    }
+
+    public synchronized double getRobotDirection() {
+        return robotDirection;
+    }
+
+    public synchronized double getTargetX() {
+        return targetX;
+    }
+
+    public synchronized double getTargetY() {
+        return targetY;
+    }
 
     public synchronized void setTargetPosition(Point p) {
         this.targetX = p.x;
