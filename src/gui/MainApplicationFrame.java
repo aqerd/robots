@@ -1,14 +1,16 @@
 package gui;
 
+import log.Logger;
+import entity.Robot;
+import localization.LocalizationManager;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.MessageFormat;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -20,20 +22,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import localization.LocalizationManager;
-import localization.Localizer;
-import log.Logger;
-import entity.Robot;
-
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final Map<String, StatefulWindow> windows = new HashMap<>();
-    private Localizer localizer;
 
     public MainApplicationFrame() {
-        this.localizer = LocalizationManager.getLocalizer(Locale.getDefault());
-        LocalizationManager.applyLocalization(Locale.getDefault());
-        setTitle(localizer.getText("appTitle"));
+        setTitle(LocalizationManager.getLocalizedText("appTitle"));
 
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -66,10 +60,9 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void setApplicationLocale(Locale locale) {
-        this.localizer = LocalizationManager.getLocalizer(locale);
-        LocalizationManager.applyLocalization(locale);
+        LocalizationManager.setLocale(locale);
 
-        setTitle(localizer.getText("appTitle"));
+        setTitle(LocalizationManager.getLocalizedText("appTitle"));
 
         if (getJMenuBar() != null) {
             setJMenuBar(generateMenuBar());
@@ -80,33 +73,33 @@ public class MainApplicationFrame extends JFrame {
                 JInternalFrame iframe = (JInternalFrame) sw;
                 String titleKey = sw.getTitleKey();
                 if (titleKey != null && !titleKey.isEmpty()) {
-                    iframe.setTitle(localizer.getText(titleKey));
+                    iframe.setTitle(LocalizationManager.getLocalizedText(titleKey));
                 }
             }
         }
 
         SwingUtilities.updateComponentTreeUI(this);
-        Logger.debug(MessageFormat.format(localizer.getText("languageSwitchedLog"), locale.toString()));
+        Logger.debug(LocalizationManager.getLocalizedText("languageSwitchedLog", locale.getDisplayName(locale)));
     }
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setTitle(localizer.getText(logWindow.getTitleKey()));
+        logWindow.setTitle(LocalizationManager.getLocalizedText(logWindow.getTitleKey()));
         logWindow.setBounds(10, 120, 320, 640);
-        Logger.debug(localizer.getText("logProtocolWorks"));
+        Logger.debug(LocalizationManager.getLocalizedText("logProtocolWorks"));
         return logWindow;
     }
 
     protected GameWindow createGameWindow(GameVisualizer visualizer) {
         GameWindow gameWindow = new GameWindow(visualizer);
-        gameWindow.setTitle(localizer.getText(gameWindow.getTitleKey()));
+        gameWindow.setTitle(LocalizationManager.getLocalizedText(gameWindow.getTitleKey()));
         gameWindow.setBounds(340, 10, 1188, 750);
         return gameWindow;
     }
 
     protected CoordinatesWindow createCoordinatesWindow(Robot robot) {
         CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
-        coordinatesWindow.setTitle(localizer.getText(coordinatesWindow.getTitleKey()));
+        coordinatesWindow.setTitle(LocalizationManager.getLocalizedText(coordinatesWindow.getTitleKey()));
         coordinatesWindow.setBounds(10, 10, 320, 100);
         return coordinatesWindow;
     }
@@ -119,7 +112,7 @@ public class MainApplicationFrame extends JFrame {
 
     private void closeHandler() {
         int n = JOptionPane.showConfirmDialog(this,
-                localizer.getText("confirmExit"),
+                LocalizationManager.getLocalizedText("confirmExit"),
                 getTitle(),
                 JOptionPane.YES_NO_OPTION);
         if (n != JOptionPane.YES_OPTION)
@@ -133,29 +126,29 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu fileMenu = new JMenu(localizer.getText("file"));
+        JMenu fileMenu = new JMenu(LocalizationManager.getLocalizedText("file"));
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem close = new JMenuItem(localizer.getText("close"), KeyEvent.VK_C);
+        JMenuItem close = new JMenuItem(LocalizationManager.getLocalizedText("close"), KeyEvent.VK_C);
         close.addActionListener((event) -> closeHandler());
         fileMenu.add(close);
 
-        JMenu lookAndFeelMenu = new JMenu(localizer.getText("viewMode"));
+        JMenu lookAndFeelMenu = new JMenu(LocalizationManager.getLocalizedText("viewMode"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        JMenuItem systemLookAndFeel = new JMenuItem(localizer.getText("systemScheme"), KeyEvent.VK_S);
+        JMenuItem systemLookAndFeel = new JMenuItem(LocalizationManager.getLocalizedText("systemScheme"), KeyEvent.VK_S);
         systemLookAndFeel.addActionListener((event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         });
         lookAndFeelMenu.add(systemLookAndFeel);
-        JMenuItem crossplatformLookAndFeel = new JMenuItem(localizer.getText("universalScheme"), KeyEvent.VK_U);
+        JMenuItem crossplatformLookAndFeel = new JMenuItem(LocalizationManager.getLocalizedText("universalScheme"), KeyEvent.VK_U);
         crossplatformLookAndFeel.addActionListener((event) -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         });
         lookAndFeelMenu.add(crossplatformLookAndFeel);
 
-        JMenu testMenu = new JMenu(localizer.getText("tests"));
+        JMenu testMenu = new JMenu(LocalizationManager.getLocalizedText("tests"));
         testMenu.setMnemonic(KeyEvent.VK_T);
-        JMenuItem addLogMessageItem = new JMenuItem(localizer.getText("logMessage"), KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> Logger.debug(localizer.getText("newLogEntry")));
+        JMenuItem addLogMessageItem = new JMenuItem(LocalizationManager.getLocalizedText("logMessage"), KeyEvent.VK_S);
+        addLogMessageItem.addActionListener((event) -> Logger.debug(LocalizationManager.getLocalizedText("newLogEntry")));
         testMenu.add(addLogMessageItem);
 
         JMenu langMenu = createLanguageMenu();
@@ -168,7 +161,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private JMenu createLanguageMenu() {
-        JMenu languageMenu = new JMenu(localizer.getText("language"));
+        JMenu languageMenu = new JMenu(LocalizationManager.getLocalizedText("language"));
         languageMenu.setMnemonic(KeyEvent.VK_L);
 
         for (Locale locale : LocalizationManager.getAvailableLocales()) {
@@ -185,9 +178,8 @@ public class MainApplicationFrame extends JFrame {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException
-                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            Logger.error(localizer.getText("lookAndFeelError") + ": " + e.getMessage());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            Logger.error(LocalizationManager.getLocalizedText("lookAndFeelError") + ": " + e.getMessage());
         }
     }
 }

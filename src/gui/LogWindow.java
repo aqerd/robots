@@ -1,5 +1,8 @@
 package gui;
 
+import log.LogChangeListener;
+import log.LogEntry;
+import log.LogWindowSource;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
@@ -7,9 +10,6 @@ import java.beans.PropertyVetoException;
 import java.util.Properties;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener, StatefulWindow {
     private LogWindowSource m_logSource;

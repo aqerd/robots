@@ -1,11 +1,12 @@
 package gui;
 
-import java.awt.*;
+import entity.Robot;
+import java.awt.BorderLayout;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
-import javax.swing.*;
-import entity.Robot;
+import javax.swing.JLabel;
+import javax.swing.JInternalFrame;
 
 public class CoordinatesWindow extends JInternalFrame implements Observer, StatefulWindow {
     private final JLabel coordinatesLabel = new JLabel("Coordinates");

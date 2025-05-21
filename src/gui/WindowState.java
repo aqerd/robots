@@ -1,12 +1,15 @@
 package gui;
 
-import java.io.*;
-import java.nio.file.Paths;
+import config.Config;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
 public class WindowState {
-    private static final String CONFIG_FILE = Paths.get(System.getProperty("user.home"), ".robots-oop", "frames.properties").toString();
+    private static final String CONFIG_FILE = Config.getFramesConfigPath();
 
     public static void saveStates(Map<String, StatefulWindow> windows) {
         Properties props = new Properties();

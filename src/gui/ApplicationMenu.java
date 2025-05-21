@@ -2,7 +2,12 @@ package gui;
 
 import log.Logger;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class ApplicationMenu extends JMenuBar {
     private final MainApplicationFrame mainFrame;

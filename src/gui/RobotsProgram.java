@@ -1,11 +1,13 @@
 package gui;
 
-import java.awt.Frame;
-import javax.swing.SwingUtilities;
+import config.Config;
 import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
+import java.awt.Frame;
 
 public class RobotsProgram {
     public static void main(String[] args) {
+        Config.ensureConfigDirectoryExists();
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");

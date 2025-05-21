@@ -1,6 +1,6 @@
 package entity;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;

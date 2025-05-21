@@ -1,13 +1,15 @@
 package gui;
 
-import java.awt.*;
+import entity.Robot;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.*;
-import entity.Robot;
+import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel implements Observer {
     private final Robot model;
