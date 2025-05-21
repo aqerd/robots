@@ -1,36 +1,81 @@
 package localization;
 
-import localization.languages.English;
-import localization.languages.French;
-import localization.languages.Russian;
-
-import java.util.*;
+import config.Config;
+import log.Logger;
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.MissingResourceException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalizationManager {
-    private static final Map<Locale, Localizer> localizers = new LinkedHashMap<>();
+    private static Locale currentLocale = Locale.getDefault();
+    private static ResourceBundle bundle;
+    private static final Map<String, MessageFormat> messageFormatCache = new ConcurrentHashMap<>();
+
+    private static final List<Locale> AVAILABLE_LOCALES = List.of(
+        new Locale("en", "US"),
+        new Locale("ru", "RU"),
+        new Locale("ar", "SA"),
+        new Locale("zh", "CN"),
+        new Locale("fr", "FR"),
+        new Locale("es", "ES")
+    );
 
     static {
-        register(new Locale("ru", "RU"), new Russian());
-        register(new Locale("en", "US"), new English());
-        register(new Locale("fr", "FR"), new French());
+        Config.ensureConfigDirectoryExists();
+        setLocale(currentLocale);
     }
 
-    public static void register(Locale locale, Localizer localizer) {
-        localizers.put(locale, localizer);
-    }
-
-    public static void applyLocalization(Locale locale) {
-        Localizer localizer = localizers.get(locale);
-        if (localizer != null) {
-            localizer.apply();
+    public static void setLocale(Locale locale) {
+        currentLocale = locale;
+        messageFormatCache.clear();
+        try {
+            File languageDir = new File(Config.CONFIG_PATH, Config.LANGUAGES_SUBDIR);
+            URL[] urls = {languageDir.toURI().toURL()};
+            ClassLoader loader = new URLClassLoader(urls);
+            bundle = ResourceBundle.getBundle(Config.BUNDLE_BASE_NAME, currentLocale, loader);
+            Logger.debug("ResourceBundle for " + getDisplayName(currentLocale) + " is loaded");
+        } catch (Exception e) {
+            Logger.error("Error: " + e.getMessage());
         }
     }
 
-    public static Set<Locale> getAvailableLocales() {
-        return localizers.keySet();
+    public static String getLocalizedText(String key, Object... params) {
+        if (bundle == null) {
+            Logger.error("ResourceBundle is not loaded. Cannot get text for key: " + key);
+            return key;
+        }
+        try {
+            String pattern = bundle.getString(key);
+            if (params.length == 0) {
+                return pattern;
+            }
+            MessageFormat messageFormat = messageFormatCache.computeIfAbsent(pattern, p -> new MessageFormat(p, currentLocale));
+            return messageFormat.format(params);
+        } catch (MissingResourceException e) {
+            Logger.error("Missing resource for key: '" + key + "' in locale: " + currentLocale);
+            return key;
+        } catch (IllegalArgumentException e) {
+            Logger.error("Invalid format for key: '" + key + "' or incorrect arguments provided. Error: " + e.getMessage());
+            return key;
+        }
+    }
+
+    public static List<Locale> getAvailableLocales() {
+        return AVAILABLE_LOCALES;
     }
 
     public static String getDisplayName(Locale locale) {
-        return locale.getDisplayLanguage(locale);
+        String displayName = locale.getDisplayLanguage(locale);
+        if (displayName.isEmpty()) {
+            return locale.toString();
+        }
+        return displayName.substring(0, 1).toUpperCase(locale) + displayName.substring(1);
     }
 }

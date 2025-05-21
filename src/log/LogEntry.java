@@ -17,4 +17,3 @@ public class LogEntry {
         return m_logLevel;
     }
 }
-

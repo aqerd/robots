@@ -1,13 +1,16 @@
 package gui;
 
+import log.Logger;
+import entity.Robot;
+import localization.LocalizationManager;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -19,35 +22,28 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import localization.LocalizationManager;
-import log.Logger;
-import entity.Robot;
-
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final Map<String, StatefulWindow> windows = new HashMap<>();
 
     public MainApplicationFrame() {
-        LocalizationManager.applyLocalization(Locale.getDefault());
+        setTitle(LocalizationManager.getLocalizedText("appTitle"));
 
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-                screenSize.width - inset * 2,
-                screenSize.height - inset * 2);
+        setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
         Robot robotModel = new Robot();
+
         LogWindow logWindow = createLogWindow();
         addStatefulWindow(logWindow);
 
-        // Создание и добавление окна с визуализацией игры
         GameVisualizer visualizer = new GameVisualizer(robotModel);
-        GameWindow gameWindow = new GameWindow(visualizer);
+        GameWindow gameWindow = createGameWindow(visualizer);
         addStatefulWindow(gameWindow);
 
-        // Создание и добавление окна с координатами робота
-        CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robotModel);
+        CoordinatesWindow coordinatesWindow = createCoordinatesWindow(robotModel);
         addStatefulWindow(coordinatesWindow);
 
         this.addWindowListener(new WindowAdapter() {
@@ -61,15 +57,51 @@ public class MainApplicationFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         WindowState.loadStates(windows);
+    }
 
+    private void setApplicationLocale(Locale locale) {
+        LocalizationManager.setLocale(locale);
+
+        setTitle(LocalizationManager.getLocalizedText("appTitle"));
+
+        if (getJMenuBar() != null) {
+            setJMenuBar(generateMenuBar());
+        }
+
+        for (StatefulWindow sw : windows.values()) {
+            if (sw instanceof JInternalFrame) {
+                JInternalFrame iframe = (JInternalFrame) sw;
+                String titleKey = sw.getTitleKey();
+                if (titleKey != null && !titleKey.isEmpty()) {
+                    iframe.setTitle(LocalizationManager.getLocalizedText(titleKey));
+                }
+            }
+        }
+
+        SwingUtilities.updateComponentTreeUI(this);
+        Logger.debug(LocalizationManager.getLocalizedText("languageSwitchedLog", locale.getDisplayName(locale)));
     }
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
-        Logger.debug("Протокол работает");
+        logWindow.setTitle(LocalizationManager.getLocalizedText(logWindow.getTitleKey()));
+        logWindow.setBounds(10, 120, 320, 640);
+        Logger.debug(LocalizationManager.getLocalizedText("logProtocolWorks"));
         return logWindow;
+    }
+
+    protected GameWindow createGameWindow(GameVisualizer visualizer) {
+        GameWindow gameWindow = new GameWindow(visualizer);
+        gameWindow.setTitle(LocalizationManager.getLocalizedText(gameWindow.getTitleKey()));
+        gameWindow.setBounds(340, 10, 1188, 750);
+        return gameWindow;
+    }
+
+    protected CoordinatesWindow createCoordinatesWindow(Robot robot) {
+        CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
+        coordinatesWindow.setTitle(LocalizationManager.getLocalizedText(coordinatesWindow.getTitleKey()));
+        coordinatesWindow.setBounds(10, 10, 320, 100);
+        return coordinatesWindow;
     }
 
     protected void addStatefulWindow(StatefulWindow window) {
@@ -79,7 +111,10 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void closeHandler() {
-        int n = JOptionPane.showConfirmDialog(this, "Вы уверены, что хотите выйти?", getTitle(), JOptionPane.YES_NO_OPTION);
+        int n = JOptionPane.showConfirmDialog(this,
+                LocalizationManager.getLocalizedText("confirmExit"),
+                getTitle(),
+                JOptionPane.YES_NO_OPTION);
         if (n != JOptionPane.YES_OPTION)
             return;
 
@@ -91,31 +126,29 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu fileMenu = new JMenu("Файл");
+        JMenu fileMenu = new JMenu(LocalizationManager.getLocalizedText("file"));
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem close = new JMenuItem("Закрыть", KeyEvent.VK_C);
+        JMenuItem close = new JMenuItem(LocalizationManager.getLocalizedText("close"), KeyEvent.VK_C);
         close.addActionListener((event) -> closeHandler());
         fileMenu.add(close);
 
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+        JMenu lookAndFeelMenu = new JMenu(LocalizationManager.getLocalizedText("viewMode"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
+        JMenuItem systemLookAndFeel = new JMenuItem(LocalizationManager.getLocalizedText("systemScheme"), KeyEvent.VK_S);
         systemLookAndFeel.addActionListener((event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            this.invalidate();
         });
         lookAndFeelMenu.add(systemLookAndFeel);
-        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_U);
+        JMenuItem crossplatformLookAndFeel = new JMenuItem(LocalizationManager.getLocalizedText("universalScheme"), KeyEvent.VK_U);
         crossplatformLookAndFeel.addActionListener((event) -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            this.invalidate();
         });
         lookAndFeelMenu.add(crossplatformLookAndFeel);
 
-        JMenu testMenu = new JMenu("Тесты");
+        JMenu testMenu = new JMenu(LocalizationManager.getLocalizedText("tests"));
         testMenu.setMnemonic(KeyEvent.VK_T);
-        JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
+        JMenuItem addLogMessageItem = new JMenuItem(LocalizationManager.getLocalizedText("logMessage"), KeyEvent.VK_S);
+        addLogMessageItem.addActionListener((event) -> Logger.debug(LocalizationManager.getLocalizedText("newLogEntry")));
         testMenu.add(addLogMessageItem);
 
         JMenu langMenu = createLanguageMenu();
@@ -128,19 +161,16 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private JMenu createLanguageMenu() {
-        JMenu languageMenu = new JMenu("Language");
+        JMenu languageMenu = new JMenu(LocalizationManager.getLocalizedText("language"));
         languageMenu.setMnemonic(KeyEvent.VK_L);
 
         for (Locale locale : LocalizationManager.getAvailableLocales()) {
             JMenuItem item = new JMenuItem(LocalizationManager.getDisplayName(locale));
             item.addActionListener(event -> {
-                LocalizationManager.applyLocalization(locale);
-                SwingUtilities.updateComponentTreeUI(this);
-                Logger.debug("Language switched: " + locale);
+                setApplicationLocale(locale);
             });
             languageMenu.add(item);
         }
-
         return languageMenu;
     }
 
@@ -148,9 +178,8 @@ public class MainApplicationFrame extends JFrame {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException
-                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            // just ignore
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            Logger.error(LocalizationManager.getLocalizedText("lookAndFeelError") + ": " + e.getMessage());
         }
     }
 }

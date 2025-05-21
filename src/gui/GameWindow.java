@@ -3,14 +3,14 @@ package gui;
 import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 
 public class GameWindow extends JInternalFrame implements StatefulWindow {
-
     private final GameVisualizer m_visualizer;
 
     public GameWindow(GameVisualizer visualizer) {
-        super("Игровое поле", true, true, true, true);
+        super("", true, true, true, true);
         m_visualizer = visualizer;
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
@@ -24,6 +24,11 @@ public class GameWindow extends JInternalFrame implements StatefulWindow {
     }
 
     @Override
+    public String getTitleKey() {
+        return "gameWindowTitle";
+    }
+
+    @Override
     public void saveState(Properties props) {
         props.setProperty(getWindowId() + ".x", String.valueOf(getX()));
         props.setProperty(getWindowId() + ".y", String.valueOf(getY()));
@@ -32,7 +37,6 @@ public class GameWindow extends JInternalFrame implements StatefulWindow {
         props.setProperty(getWindowId() + ".isIcon", String.valueOf(isIcon()));
         props.setProperty(getWindowId() + ".isMaximum", String.valueOf(isMaximum()));
 
-        // Например, потом тут можно добавить сохранение состояния визуализатора (позиция робота)
     }
 
     @Override

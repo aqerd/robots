@@ -1,5 +1,8 @@
 package gui;
 
+import log.LogChangeListener;
+import log.LogEntry;
+import log.LogWindowSource;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
@@ -7,17 +10,13 @@ import java.beans.PropertyVetoException;
 import java.util.Properties;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener, StatefulWindow {
-
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
 
     public LogWindow(LogWindowSource logSource) {
-        super("Протокол работы", true, true, true, true);
+        super("", true, true, true, true);
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
@@ -50,6 +49,11 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
     }
 
     @Override
+    public String getTitleKey() {
+        return "logWindowTitle";
+    }
+
+    @Override
     public void saveState(Properties props) {
         props.setProperty(getWindowId() + ".x", String.valueOf(getX()));
         props.setProperty(getWindowId() + ".y", String.valueOf(getY()));
@@ -57,8 +61,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
         props.setProperty(getWindowId() + ".height", String.valueOf(getHeight()));
         props.setProperty(getWindowId() + ".isIcon", String.valueOf(isIcon()));
         props.setProperty(getWindowId() + ".isMaximum", String.valueOf(isMaximum()));
-
-        // Тут в будущем можно будет добавить сохранение состояния логов, если понадобится
     }
 
     @Override
@@ -73,11 +75,11 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
         setBounds(x, y, width, height);
         try {
             setIcon(isIcon);
-            setMaximum(isMaximum);
+            if (isMaximum) {
+                setMaximum(true);
+            }
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-
-        // Тут в будущем можно будет добавить загрузку состояния логов, если понадобится
     }
 }
