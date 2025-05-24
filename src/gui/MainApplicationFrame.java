@@ -1,11 +1,14 @@
 package gui;
 
 import log.Logger;
-import entity.Robot;
-import localization.LocalizationManager;
+import entity.robots.*;
+import entity.RobotModel;
+import utils.LocalizationManager;
+import utils.StatefulWindow;
+import utils.WindowState;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
@@ -16,170 +19,166 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class MainApplicationFrame extends JFrame {
-    private final JDesktopPane desktopPane = new JDesktopPane();
-    private final Map<String, StatefulWindow> windows = new HashMap<>();
+	private final JDesktopPane desktopPane = new JDesktopPane();
+	private final Map<String, StatefulWindow> windows = new HashMap<>();
 
-    public MainApplicationFrame() {
-        setTitle(LocalizationManager.getLocalizedText("appTitle"));
+	private RobotModel robotModel;
+	private GameVisualizer visualizer;
+	private GameWindow gameWindow;
+	private CoordinatesWindow coordinatesWindow;
 
-        int inset = 50;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
+	public MainApplicationFrame() {
+		setTitle(LocalizationManager.getLocalizedText("appTitle"));
 
-        setContentPane(desktopPane);
-        Robot robotModel = new Robot();
+		int inset = 50;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
-        LogWindow logWindow = createLogWindow();
-        addStatefulWindow(logWindow);
+		setContentPane(desktopPane);
 
-        GameVisualizer visualizer = new GameVisualizer(robotModel);
-        GameWindow gameWindow = createGameWindow(visualizer);
-        addStatefulWindow(gameWindow);
+		this.robotModel = new BaseRobot();
 
-        CoordinatesWindow coordinatesWindow = createCoordinatesWindow(robotModel);
-        addStatefulWindow(coordinatesWindow);
+		LogWindow logWindow = createLogWindow();
+		addStatefulWindow(logWindow);
 
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent event) {
-                closeHandler();
-            }
-        });
+		this.visualizer = new GameVisualizer(this.robotModel);
+		this.gameWindow = createGameWindow(this.visualizer);
+		addStatefulWindow(this.gameWindow);
 
-        setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.coordinatesWindow = createCoordinatesWindow(this.robotModel);
+		addStatefulWindow(this.coordinatesWindow);
 
-        WindowState.loadStates(windows);
-    }
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent event) {
+				closeHandler();
+			}
+		});
 
-    private void setApplicationLocale(Locale locale) {
-        LocalizationManager.setLocale(locale);
+		setJMenuBar(generateMenuBar());
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        setTitle(LocalizationManager.getLocalizedText("appTitle"));
+		WindowState.loadStates(windows);
+	}
 
-        if (getJMenuBar() != null) {
-            setJMenuBar(generateMenuBar());
-        }
+	public void setApplicationLocale(Locale locale) {
+		LocalizationManager.setLocale(locale);
 
-        for (StatefulWindow sw : windows.values()) {
-            if (sw instanceof JInternalFrame) {
-                JInternalFrame iframe = (JInternalFrame) sw;
-                String titleKey = sw.getTitleKey();
-                if (titleKey != null && !titleKey.isEmpty()) {
-                    iframe.setTitle(LocalizationManager.getLocalizedText(titleKey));
-                }
-            }
-        }
+		setTitle(LocalizationManager.getLocalizedText("appTitle"));
 
-        SwingUtilities.updateComponentTreeUI(this);
-        Logger.debug(LocalizationManager.getLocalizedText("languageSwitchedLog", locale.getDisplayName(locale)));
-    }
+		if (getJMenuBar() != null) {
+			setJMenuBar(generateMenuBar());
+		}
 
-    protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setTitle(LocalizationManager.getLocalizedText(logWindow.getTitleKey()));
-        logWindow.setBounds(10, 120, 320, 640);
-        Logger.debug(LocalizationManager.getLocalizedText("logProtocolWorks"));
-        return logWindow;
-    }
+		for (StatefulWindow sw : windows.values()) {
+			if (sw instanceof JInternalFrame) {
+				JInternalFrame iframe = (JInternalFrame) sw;
+				String titleKey = sw.getTitleKey();
+				if (titleKey != null && !titleKey.isEmpty()) {
+					iframe.setTitle(LocalizationManager.getLocalizedText(titleKey));
+				}
+			}
+		}
 
-    protected GameWindow createGameWindow(GameVisualizer visualizer) {
-        GameWindow gameWindow = new GameWindow(visualizer);
-        gameWindow.setTitle(LocalizationManager.getLocalizedText(gameWindow.getTitleKey()));
-        gameWindow.setBounds(340, 10, 1188, 750);
-        return gameWindow;
-    }
+		SwingUtilities.updateComponentTreeUI(this);
+		Logger.debug(LocalizationManager.getLocalizedText("languageSwitchedLog", locale.getDisplayName(locale)));
+	}
 
-    protected CoordinatesWindow createCoordinatesWindow(Robot robot) {
-        CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
-        coordinatesWindow.setTitle(LocalizationManager.getLocalizedText(coordinatesWindow.getTitleKey()));
-        coordinatesWindow.setBounds(10, 10, 320, 100);
-        return coordinatesWindow;
-    }
+	protected LogWindow createLogWindow() {
+		LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+		logWindow.setTitle(LocalizationManager.getLocalizedText(logWindow.getTitleKey()));
+		logWindow.setBounds(10, 120, 320, 640);
+		Logger.debug(LocalizationManager.getLocalizedText("logProtocolWorks"));
+		return logWindow;
+	}
 
-    protected void addStatefulWindow(StatefulWindow window) {
-        windows.put(window.getWindowId(), window);
-        desktopPane.add((JInternalFrame) window);
-        ((JInternalFrame) window).setVisible(true);
-    }
+	protected GameWindow createGameWindow(GameVisualizer visualizer) {
+		GameWindow gameWindow = new GameWindow(visualizer);
+		gameWindow.setTitle(LocalizationManager.getLocalizedText(gameWindow.getTitleKey()));
+		gameWindow.setBounds(340, 10, 1188, 750);
+		return gameWindow;
+	}
 
-    private void closeHandler() {
-        int n = JOptionPane.showConfirmDialog(this,
-                LocalizationManager.getLocalizedText("confirmExit"),
-                getTitle(),
-                JOptionPane.YES_NO_OPTION);
-        if (n != JOptionPane.YES_OPTION)
-            return;
+	protected CoordinatesWindow createCoordinatesWindow(RobotModel robot) {
+		CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
+		coordinatesWindow.setTitle(LocalizationManager.getLocalizedText(coordinatesWindow.getTitleKey()));
+		coordinatesWindow.setBounds(10, 10, 320, 100);
+		return coordinatesWindow;
+	}
 
-        WindowState.saveStates(windows);
-        dispose();
-        System.exit(0);
-    }
+	protected void addStatefulWindow(StatefulWindow window) {
+		windows.put(window.getWindowId(), window);
+		desktopPane.add((JInternalFrame) window);
+		((JInternalFrame) window).setVisible(true);
+	}
 
-    private JMenuBar generateMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
+	public void setRobotModel(RobotModel newModel) {
+		if (this.gameWindow != null) {
+			desktopPane.remove(this.gameWindow);
+			windows.remove(this.gameWindow.getWindowId());
+		}
+		if (this.coordinatesWindow != null) {
+			desktopPane.remove(this.coordinatesWindow);
+			windows.remove(this.coordinatesWindow.getWindowId());
+		}
 
-        JMenu fileMenu = new JMenu(LocalizationManager.getLocalizedText("file"));
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-        JMenuItem close = new JMenuItem(LocalizationManager.getLocalizedText("close"), KeyEvent.VK_C);
-        close.addActionListener((event) -> closeHandler());
-        fileMenu.add(close);
+		this.robotModel = newModel;
 
-        JMenu lookAndFeelMenu = new JMenu(LocalizationManager.getLocalizedText("viewMode"));
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        JMenuItem systemLookAndFeel = new JMenuItem(LocalizationManager.getLocalizedText("systemScheme"), KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        });
-        lookAndFeelMenu.add(systemLookAndFeel);
-        JMenuItem crossplatformLookAndFeel = new JMenuItem(LocalizationManager.getLocalizedText("universalScheme"), KeyEvent.VK_U);
-        crossplatformLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        });
-        lookAndFeelMenu.add(crossplatformLookAndFeel);
+		this.visualizer = new GameVisualizer(this.robotModel);
+		
+		this.gameWindow = createGameWindow(this.visualizer);
+		addStatefulWindow(this.gameWindow);
+		
+		this.coordinatesWindow = createCoordinatesWindow(this.robotModel);
+		addStatefulWindow(this.coordinatesWindow);
 
-        JMenu testMenu = new JMenu(LocalizationManager.getLocalizedText("tests"));
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        JMenuItem addLogMessageItem = new JMenuItem(LocalizationManager.getLocalizedText("logMessage"), KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> Logger.debug(LocalizationManager.getLocalizedText("newLogEntry")));
-        testMenu.add(addLogMessageItem);
+		desktopPane.revalidate();
+		desktopPane.repaint();
+	}
 
-        JMenu langMenu = createLanguageMenu();
+	public void closeHandler() {
+		int n = JOptionPane.showConfirmDialog(this,
+				LocalizationManager.getLocalizedText("confirmExit"),
+				getTitle(),
+				JOptionPane.YES_NO_OPTION);
+		if (n != JOptionPane.YES_OPTION)
+			return;
 
-        menuBar.add(fileMenu);
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
-        menuBar.add(langMenu);
-        return menuBar;
-    }
+		WindowState.saveStates(windows);
+		dispose();
+		System.exit(0);
+	}
 
-    private JMenu createLanguageMenu() {
-        JMenu languageMenu = new JMenu(LocalizationManager.getLocalizedText("language"));
-        languageMenu.setMnemonic(KeyEvent.VK_L);
+	private JMenuBar generateMenuBar() {
+		JMenuBar menuBar = new JMenuBar();
 
-        for (Locale locale : LocalizationManager.getAvailableLocales()) {
-            JMenuItem item = new JMenuItem(LocalizationManager.getDisplayName(locale));
-            item.addActionListener(event -> {
-                setApplicationLocale(locale);
-            });
-            languageMenu.add(item);
-        }
-        return languageMenu;
-    }
+		JMenu fileMenu = MenuFactory.createFileMenu(this);
+		JMenu lookAndFeelMenu = MenuFactory.createLookAndFeelMenu(this);
+		JMenu testMenu = MenuFactory.createTestMenu();
+		JMenu langMenu = MenuFactory.createLanguageMenu(this);
+		JMenu robotMenu = MenuFactory.createRobotMenu(this);
 
-    private void setLookAndFeel(String className) {
-        try {
-            UIManager.setLookAndFeel(className);
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            Logger.error(LocalizationManager.getLocalizedText("lookAndFeelError") + ": " + e.getMessage());
-        }
-    }
+		menuBar.add(fileMenu);
+		menuBar.add(lookAndFeelMenu);
+		menuBar.add(testMenu);
+		menuBar.add(langMenu);
+		menuBar.add(robotMenu);
+
+		return menuBar;
+	}
+
+	public void setLookAndFeel(String className) {
+		try {
+			UIManager.setLookAndFeel(className);
+			SwingUtilities.updateComponentTreeUI(this);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			Logger.error(LocalizationManager.getLocalizedText("lookAndFeelError") + ": " + e.getMessage());
+		}
+	}
 }

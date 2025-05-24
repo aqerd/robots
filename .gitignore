@@ -69,3 +69,9 @@ assets/config.properties
 /robots/bin
 eclipse.bat
 /out
+/compiled
+resources/frames.properties
+/resources/jars/CatoRabbit.jar
+/resources/images/catorabbit.jpg
+/Makefile
+/resources/images/pub.png
