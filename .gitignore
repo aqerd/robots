@@ -71,8 +71,9 @@ eclipse.bat
 /out
 /compiled
 resources/frames.properties
-/resources/jars/CatoRabbit.jar
+/resources/jars/CatoRabbit.zip
 /resources/images/catorabbit.jpg
 /Makefile
 /resources/images/pub.png
 /bash.exe.stackdump
+/resources/jars/CatoRabbit.jar

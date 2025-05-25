@@ -1,4 +1,4 @@
-package entity;
+package entity.point;
 
 import java.awt.Graphics2D;
 import java.awt.Color;

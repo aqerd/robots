@@ -1,7 +1,7 @@
 package gui;
 
-import entity.robots.BaseRobot;
-import entity.RobotModel;
+import entity.robots.example.BaseRobot;
+import entity.robots.RobotModel;
 import gui.factory.Menu;
 import gui.factory.Window;
 import gui.windows.Coordinates;

@@ -1,6 +1,7 @@
-package entity.robots;
+package entity.robots.example;
 
-import entity.RobotModel;
+import entity.robots.RobotModel;
+
 import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Color;

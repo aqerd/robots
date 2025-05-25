@@ -1,4 +1,4 @@
-package entity;
+package entity.robots;
 
 import java.awt.Point;
 import java.awt.Graphics2D;

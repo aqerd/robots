@@ -1,6 +1,6 @@
 package utils;
 
-import entity.RobotModel;
+import entity.robots.RobotModel;
 import gui.MainApplicationFrame;
 import log.Logger;
 import java.io.File;
@@ -63,7 +63,7 @@ public class JarRobotLoader {
 
 	private static List<String> findRobotClassesInJar(File jarFile) throws IOException {
 		List<String> classNames = new ArrayList<>();
-		String packagePath = "entity/robots/";
+		String packagePath = "entity/robots/jar";
 		try (JarFile jar = new JarFile(jarFile)) {
 			jar.stream()
 				.map(JarEntry::getName)

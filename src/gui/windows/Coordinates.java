@@ -1,6 +1,6 @@
 package gui.windows;
 
-import entity.RobotModel;
+import entity.robots.RobotModel;
 import log.Logger;
 import utils.LocalizationManager;
 import utils.StatefulWindow;

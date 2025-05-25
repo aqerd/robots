@@ -1,11 +1,11 @@
 package gui.factory;
 
-import entity.robots.BaseRobot;
-import entity.robots.Pub;
-import entity.robots.CustomImageRobot;
-import entity.robots.ConfigurableRobot;
+import entity.robots.example.BaseRobot;
+import entity.robots.example.Pub;
+import entity.robots.custom.ImageRobot;
+import entity.robots.custom.DrawableRobot;
 import gui.MainApplicationFrame;
-import gui.windows.RobotCustomizationDialog;
+import gui.windows.dialog.RobotCustomization;
 import log.Logger;
 import utils.JarRobotLoader;
 import utils.LocalizationManager;
@@ -98,24 +98,24 @@ public class Menu {
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = fileChooser.getSelectedFile();
 				Logger.info(LocalizationManager.getLocalizedText("logSelectedUserImageRobot", selectedFile.getAbsolutePath()));
-				frame.setRobotModel(new CustomImageRobot(selectedFile.getAbsolutePath()));
+				frame.setRobotModel(new ImageRobot(selectedFile.getAbsolutePath()));
 			}
 		});
 		robotMenu.add(loadImageRobotItem);
 
 		JMenuItem createRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("createRobotMenuItem"));
 		createRobotItem.addActionListener(_ -> {
-			RobotCustomizationDialog dialog = new RobotCustomizationDialog(frame);
+			RobotCustomization dialog = new RobotCustomization(frame);
 			dialog.setVisible(true);
 			if (dialog.isConfirmed()) {
-				ConfigurableRobot robot = new ConfigurableRobot(
+				DrawableRobot robot = new DrawableRobot(
 					dialog.getSelectedSize(),
 					dialog.getSelectedShape(),
 					dialog.getSelectedFillColor(),
 					dialog.getSelectedBorderColor(),
 					dialog.getSelectedTargetIndicatorColor(),
-                    dialog.getSelectedVelocity(),
-                    dialog.getSelectedAngularVelocity()
+					dialog.getSelectedVelocity(),
+					dialog.getSelectedAngularVelocity()
 				);
 				frame.setRobotModel(robot);
 				Logger.info(LocalizationManager.getLocalizedText("logRobotConfiguredAndSet"));

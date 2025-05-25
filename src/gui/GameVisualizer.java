@@ -1,7 +1,7 @@
 package gui;
 
-import entity.RobotModel;
-import entity.Target;
+import entity.robots.RobotModel;
+import entity.point.Target;
 import log.Logger;
 import utils.LocalizationManager;
 import java.awt.Graphics;

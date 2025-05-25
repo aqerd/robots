@@ -1,6 +1,6 @@
-package entity.robots;
+package entity.robots.jar;
 
-import entity.RobotModel;
+import entity.robots.RobotModel;
 import log.Logger;
 import utils.LocalizationManager;
 import java.awt.*;
