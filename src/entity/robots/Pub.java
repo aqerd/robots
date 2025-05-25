@@ -2,6 +2,9 @@ package entity.robots;
 
 import java.awt.Point;
 import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import javax.swing.JPanel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
@@ -117,12 +120,18 @@ public class Pub extends Observable implements RobotModel {
 	}
 
 	@Override
-	public Image getImage() {
-		return robotImage;
-	}
+	public void draw(Graphics2D g, JPanel observer) {
+		int robotXCoord = (int) getRobotX();
+		int robotYCoord = (int) getRobotY();
+		double direction = getRobotDirection();
 
-	@Override
-	public String getDrawingRules() {
-		return null;
+		AffineTransform t = AffineTransform.getRotateInstance(direction, robotXCoord, robotYCoord);
+		g.setTransform(t);
+
+		if (this.robotImage != null) {
+			int imgWidth = this.robotImage.getWidth(observer);
+			int imgHeight = this.robotImage.getHeight(observer);
+			g.drawImage(this.robotImage, robotXCoord - imgWidth / 2, robotYCoord - imgHeight / 2, observer);
+		}
 	}
 }

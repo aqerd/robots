@@ -4,7 +4,9 @@ import entity.RobotModel;
 import log.Logger;
 import utils.LocalizationManager;
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
@@ -47,7 +49,7 @@ public class CatoRabbit extends Observable implements RobotModel {
 			this.robotImage = null;
 		}
 
-		Timer timer = new Timer("Pub timer", true);
+		Timer timer = new Timer("CatoRabbit timer", true);
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -59,7 +61,7 @@ public class CatoRabbit extends Observable implements RobotModel {
 	@Override
 	public void updateModel() {
 		double distance = Point.distance(robotX, robotY, targetX, targetY);
-		if (distance < 0.5) {
+		if (distance < 0.1) {
 			return;
 		}
 
@@ -116,12 +118,18 @@ public class CatoRabbit extends Observable implements RobotModel {
 	}
 
 	@Override
-	public Image getImage() {
-		return robotImage;
-	}
+	public void draw(Graphics2D g, JPanel observer) {
+		int robotXCoord = (int) getRobotX();
+		int robotYCoord = (int) getRobotY();
+		double direction = getRobotDirection();
 
-	@Override
-	public String getDrawingRules() {
-		return null;
+		AffineTransform t = AffineTransform.getRotateInstance(direction, robotXCoord, robotYCoord);
+		g.setTransform(t);
+
+		if (this.robotImage != null) {
+			int imgWidth = this.robotImage.getWidth(observer);
+			int imgHeight = this.robotImage.getHeight(observer);
+			g.drawImage(this.robotImage, robotXCoord - imgWidth / 2, robotYCoord - imgHeight / 2, observer);
+		}
 	}
 }
