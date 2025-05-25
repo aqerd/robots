@@ -6,11 +6,15 @@ import utils.LocalizationManager;
 import log.Logger;
 import entity.robots.BaseRobot;
 import entity.robots.Pub;
+import entity.robots.CustomImageRobot;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 
 public class Menu {
 	public static JMenu createFileMenu(MainApplicationFrame frame) {
@@ -80,6 +84,32 @@ public class Menu {
 			frame.setRobotModel(new Pub());
 		});
 		robotMenu.add(imageRobotItem);
+
+		JMenuItem loadImageRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("loadImageRobotMenuItem"));
+		loadImageRobotItem.addActionListener(_ -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle(LocalizationManager.getLocalizedText("selectImageFileDialogTitle"));
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				LocalizationManager.getLocalizedText("imageFileFilterDescription"), "jpg", "png", "webp", "gif");
+			fileChooser.setFileFilter(filter);
+			int returnValue = fileChooser.showOpenDialog(frame);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				Logger.info(LocalizationManager.getLocalizedText("logSelectedUserImageRobot", selectedFile.getAbsolutePath()));
+				frame.setRobotModel(new CustomImageRobot(selectedFile.getAbsolutePath()));
+			}
+		});
+		robotMenu.add(loadImageRobotItem);
+
+		JMenuItem createRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("createRobotMenuItem"));
+		createRobotItem.addActionListener(_ -> {
+			Logger.info(LocalizationManager.getLocalizedText("logSelectedCreateRobot"));
+			// TODO: Реализовать логику создания нового робота
+			// Например, открыть диалоговое окно для настройки параметров робота
+			// и затем создать экземпляр соответствующего класса робота.
+			// frame.setRobotModel(new SomeNewRobot());
+		});
+		robotMenu.add(createRobotItem);
 
 		JMenuItem loadRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("loadRobotFromJarMenuItem"));
 		loadRobotItem.addActionListener(_ -> {
