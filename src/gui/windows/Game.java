@@ -1,5 +1,6 @@
-package gui;
+package gui.windows;
 
+import gui.GameVisualizer;
 import utils.StatefulWindow;
 
 import java.awt.BorderLayout;
@@ -8,10 +9,10 @@ import java.util.Properties;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class GameWindow extends JInternalFrame implements StatefulWindow {
+public class Game extends JInternalFrame implements StatefulWindow {
 	private final GameVisualizer m_visualizer;
 
-	public GameWindow(GameVisualizer visualizer) {
+	public Game(GameVisualizer visualizer) {
 		super("", true, true, true, true);
 		m_visualizer = visualizer;
 		JPanel panel = new JPanel(new BorderLayout());
@@ -22,7 +23,7 @@ public class GameWindow extends JInternalFrame implements StatefulWindow {
 
 	@Override
 	public String getWindowId() {
-		return "GameWindow";
+		return "Game";
 	}
 
 	@Override

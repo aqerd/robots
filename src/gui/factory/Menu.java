@@ -1,16 +1,18 @@
-package gui;
+package gui.factory;
 
+import gui.MainApplicationFrame;
 import utils.JarRobotLoader;
 import utils.LocalizationManager;
 import log.Logger;
-import entity.robots.*;
+import entity.robots.BaseRobot;
+import entity.robots.Pub;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 
-public class MenuFactory {
+public class Menu {
 	public static JMenu createFileMenu(MainApplicationFrame frame) {
 		JMenu fileMenu = new JMenu(LocalizationManager.getLocalizedText("file"));
 		fileMenu.setMnemonic(KeyEvent.VK_F);

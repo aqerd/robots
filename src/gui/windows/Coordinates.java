@@ -1,4 +1,4 @@
-package gui;
+package gui.windows;
 
 import log.Logger;
 import entity.RobotModel;
@@ -11,15 +11,15 @@ import java.util.Properties;
 import javax.swing.JLabel;
 import javax.swing.JInternalFrame;
 
-public class CoordinatesWindow extends JInternalFrame implements Observer, StatefulWindow {
+public class Coordinates extends JInternalFrame implements Observer, StatefulWindow {
 	private final JLabel coordinatesLabel = new JLabel("Coordinates");
 
-	public CoordinatesWindow(RobotModel model) {
+	public Coordinates(RobotModel model) {
 		super("", true, true, true, true);
 		if (model instanceof Observable) {
 			((Observable) model).addObserver(this);
 		} else {
-			Logger.warn("RobotModel instance passed to CoordinatesWindow is not Observable.");
+			Logger.warn("RobotModel instance passed to Coordinates is not Observable.");
 		}
 		setLayout(new BorderLayout());
 		add(coordinatesLabel, BorderLayout.CENTER);
@@ -38,7 +38,7 @@ public class CoordinatesWindow extends JInternalFrame implements Observer, State
 
 	@Override
 	public String getWindowId() {
-		return "CoordinatesWindow";
+		return "Coordinates";
 	}
 
 	@Override

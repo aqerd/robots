@@ -1,12 +1,16 @@
 package gui;
 
+import gui.factory.Menu;
+import gui.factory.Window;
+import gui.windows.Coordinates;
+import gui.windows.Game;
+import gui.windows.Log;
 import log.Logger;
-import entity.robots.*;
+import entity.robots.BaseRobot;
 import entity.RobotModel;
 import utils.LocalizationManager;
 import utils.StatefulWindow;
 import utils.WindowState;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -30,8 +34,8 @@ public class MainApplicationFrame extends JFrame {
 
 	private RobotModel robotModel;
 	private GameVisualizer visualizer;
-	private GameWindow gameWindow;
-	private CoordinatesWindow coordinatesWindow;
+	private Game gameWindow;
+	private Coordinates coordinatesWindow;
 
 	public MainApplicationFrame() {
 		setTitle(LocalizationManager.getLocalizedText("appTitle"));
@@ -44,14 +48,14 @@ public class MainApplicationFrame extends JFrame {
 
 		this.robotModel = new BaseRobot();
 
-		LogWindow logWindow = createLogWindow();
+		Log logWindow = Window.createLogWindow();
 		addStatefulWindow(logWindow);
 
 		this.visualizer = new GameVisualizer(this.robotModel);
-		this.gameWindow = createGameWindow(this.visualizer);
+		this.gameWindow = Window.createGameWindow(this.visualizer);
 		addStatefulWindow(this.gameWindow);
 
-		this.coordinatesWindow = createCoordinatesWindow(this.robotModel);
+		this.coordinatesWindow = Window.createCoordinatesWindow(this.robotModel);
 		addStatefulWindow(this.coordinatesWindow);
 
 		this.addWindowListener(new WindowAdapter() {
@@ -90,28 +94,6 @@ public class MainApplicationFrame extends JFrame {
 		Logger.debug(LocalizationManager.getLocalizedText("languageSwitchedLog", locale.getDisplayName(locale)));
 	}
 
-	protected LogWindow createLogWindow() {
-		LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-		logWindow.setTitle(LocalizationManager.getLocalizedText(logWindow.getTitleKey()));
-		logWindow.setBounds(10, 120, 320, 640);
-		Logger.debug(LocalizationManager.getLocalizedText("logProtocolWorks"));
-		return logWindow;
-	}
-
-	protected GameWindow createGameWindow(GameVisualizer visualizer) {
-		GameWindow gameWindow = new GameWindow(visualizer);
-		gameWindow.setTitle(LocalizationManager.getLocalizedText(gameWindow.getTitleKey()));
-		gameWindow.setBounds(340, 10, 1188, 750);
-		return gameWindow;
-	}
-
-	protected CoordinatesWindow createCoordinatesWindow(RobotModel robot) {
-		CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
-		coordinatesWindow.setTitle(LocalizationManager.getLocalizedText(coordinatesWindow.getTitleKey()));
-		coordinatesWindow.setBounds(10, 10, 320, 100);
-		return coordinatesWindow;
-	}
-
 	protected void addStatefulWindow(StatefulWindow window) {
 		windows.put(window.getWindowId(), window);
 		desktopPane.add((JInternalFrame) window);
@@ -132,10 +114,10 @@ public class MainApplicationFrame extends JFrame {
 
 		this.visualizer = new GameVisualizer(this.robotModel);
 		
-		this.gameWindow = createGameWindow(this.visualizer);
+		this.gameWindow = Window.createGameWindow(this.visualizer);
 		addStatefulWindow(this.gameWindow);
 		
-		this.coordinatesWindow = createCoordinatesWindow(this.robotModel);
+		this.coordinatesWindow = Window.createCoordinatesWindow(this.robotModel);
 		addStatefulWindow(this.coordinatesWindow);
 
 		desktopPane.revalidate();
@@ -158,11 +140,11 @@ public class MainApplicationFrame extends JFrame {
 	private JMenuBar generateMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 
-		JMenu fileMenu = MenuFactory.createFileMenu(this);
-		JMenu lookAndFeelMenu = MenuFactory.createLookAndFeelMenu(this);
-		JMenu testMenu = MenuFactory.createTestMenu();
-		JMenu langMenu = MenuFactory.createLanguageMenu(this);
-		JMenu robotMenu = MenuFactory.createRobotMenu(this);
+		JMenu fileMenu = Menu.createFileMenu(this);
+		JMenu lookAndFeelMenu = Menu.createLookAndFeelMenu(this);
+		JMenu testMenu = Menu.createTestMenu();
+		JMenu langMenu = Menu.createLanguageMenu(this);
+		JMenu robotMenu = Menu.createRobotMenu(this);
 
 		menuBar.add(fileMenu);
 		menuBar.add(lookAndFeelMenu);

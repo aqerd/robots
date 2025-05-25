@@ -1,6 +1,6 @@
 package utils;
 
-import config.Config;
+import config.Settings;
 import log.Logger;
 import java.io.File;
 import java.net.URL;
@@ -28,7 +28,7 @@ public class LocalizationManager {
 	);
 
 	static {
-		Config.ensureConfigDirectoryExists();
+		Settings.ensureConfigDirectoryExists();
 		setLocale(currentLocale);
 	}
 
@@ -36,10 +36,10 @@ public class LocalizationManager {
 		currentLocale = locale;
 		messageFormatCache.clear();
 		try {
-			File languageDir = new File(Config.RESOURCES_DIR_NAME, Config.LANGUAGES_SUBDIR);
+			File languageDir = new File(Settings.RESOURCES_DIR_NAME, Settings.LANGUAGES_SUBDIR);
 			URL[] urls = {languageDir.toURI().toURL()};
 			ClassLoader loader = new URLClassLoader(urls);
-			bundle = ResourceBundle.getBundle(Config.BUNDLE_BASE_NAME, currentLocale, loader);
+			bundle = ResourceBundle.getBundle(Settings.BUNDLE_BASE_NAME, currentLocale, loader);
 			Logger.debug("ResourceBundle for " + getDisplayName(currentLocale) + " is loaded");
 		} catch (Exception e) {
 			Logger.error("Error loading resource bundle for locale " + locale + " (" + getDisplayName(locale) + "): " + e.getMessage());
