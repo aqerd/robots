@@ -1,19 +1,19 @@
 package entity.robots;
 
+import entity.RobotModel;
+import log.Logger;
+import utils.LocalizationManager;
 import java.awt.Point;
 import java.awt.Image;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import javax.swing.JPanel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
-import entity.RobotModel;
-import log.Logger;
-import utils.LocalizationManager;
+import javax.swing.JPanel;
 
 public class Pub extends Observable implements RobotModel {
 	private static final int IMAGE_WIDTH = 64;

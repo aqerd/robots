@@ -5,10 +5,10 @@ import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
-import javax.swing.JPanel;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JPanel;
 
 public class BaseRobot extends Observable implements RobotModel {
 	private volatile double robotX = 100;

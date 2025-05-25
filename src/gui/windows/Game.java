@@ -2,7 +2,6 @@ package gui.windows;
 
 import gui.GameVisualizer;
 import utils.StatefulWindow;
-
 import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
 import java.util.Properties;

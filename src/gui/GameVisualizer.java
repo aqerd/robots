@@ -1,8 +1,9 @@
 package gui;
 
-import log.Logger;
 import entity.RobotModel;
 import entity.Target;
+import log.Logger;
+import utils.LocalizationManager;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -20,7 +21,7 @@ public class GameVisualizer extends JPanel implements Observer {
 		if (model instanceof Observable) {
 			((Observable) model).addObserver(this);
 		} else {
-			Logger.warn("RobotModel instance passed to GameVisualizer is not Observable.");
+			Logger.warn(LocalizationManager.getLocalizedText("warnRobotModelNotObservable"));
 		}
 		addMouseListener(new MouseAdapter() {
 			@Override

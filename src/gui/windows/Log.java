@@ -4,7 +4,6 @@ import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 import utils.StatefulWindow;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;

@@ -1,12 +1,15 @@
 package gui.factory;
 
-import gui.MainApplicationFrame;
-import utils.JarRobotLoader;
-import utils.LocalizationManager;
-import log.Logger;
 import entity.robots.BaseRobot;
 import entity.robots.Pub;
 import entity.robots.CustomImageRobot;
+import entity.robots.ConfigurableRobot;
+import gui.MainApplicationFrame;
+import gui.windows.RobotCustomizationDialog;
+import log.Logger;
+import utils.JarRobotLoader;
+import utils.LocalizationManager;
+import java.io.File;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
 import javax.swing.JMenu;
@@ -14,7 +17,6 @@ import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 
 public class Menu {
 	public static JMenu createFileMenu(MainApplicationFrame frame) {
@@ -103,11 +105,23 @@ public class Menu {
 
 		JMenuItem createRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("createRobotMenuItem"));
 		createRobotItem.addActionListener(_ -> {
-			Logger.info(LocalizationManager.getLocalizedText("logSelectedCreateRobot"));
-			// TODO: Реализовать логику создания нового робота
-			// Например, открыть диалоговое окно для настройки параметров робота
-			// и затем создать экземпляр соответствующего класса робота.
-			// frame.setRobotModel(new SomeNewRobot());
+			RobotCustomizationDialog dialog = new RobotCustomizationDialog(frame);
+			dialog.setVisible(true);
+			if (dialog.isConfirmed()) {
+				ConfigurableRobot robot = new ConfigurableRobot(
+					dialog.getSelectedSize(),
+					dialog.getSelectedShape(),
+					dialog.getSelectedFillColor(),
+					dialog.getSelectedBorderColor(),
+					dialog.getSelectedTargetIndicatorColor(),
+                    dialog.getSelectedVelocity(),
+                    dialog.getSelectedAngularVelocity()
+				);
+				frame.setRobotModel(robot);
+				Logger.info(LocalizationManager.getLocalizedText("logRobotConfiguredAndSet"));
+			} else {
+				Logger.info(LocalizationManager.getLocalizedText("logRobotConfigurationCancelled"));
+			}
 		});
 		robotMenu.add(createRobotItem);
 

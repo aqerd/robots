@@ -1,19 +1,19 @@
 package entity.robots;
 
+import entity.RobotModel;
+import log.Logger;
+import utils.LocalizationManager;
 import java.awt.Point;
 import java.awt.Image;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import javax.swing.JPanel;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
-import entity.RobotModel;
-import log.Logger;
-import utils.LocalizationManager;
+import javax.swing.JPanel;
 
 public class CustomImageRobot extends Observable implements RobotModel {
     private static final int IMAGE_WIDTH = 64;
@@ -135,7 +135,6 @@ public class CustomImageRobot extends Observable implements RobotModel {
             int imgHeight = this.robotImage.getHeight(observer);
             g.drawImage(this.robotImage, robotXCoord - imgWidth / 2, robotYCoord - imgHeight / 2, observer);
         } else {
-            // Можно добавить отрисовку по умолчанию, если изображение не загружено
             g.setColor(java.awt.Color.RED);
             g.fillRect(robotXCoord - 10, robotYCoord - 10, 20, 20);
             g.setColor(java.awt.Color.BLACK);

@@ -3,8 +3,6 @@ package entity.robots;
 import entity.RobotModel;
 import log.Logger;
 import utils.LocalizationManager;
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
@@ -12,6 +10,8 @@ import java.net.URL;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class CatoRabbit extends Observable implements RobotModel {
 	private static final int IMAGE_WIDTH = 48;

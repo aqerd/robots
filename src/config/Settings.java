@@ -1,9 +1,9 @@
 package config;
 
 import log.Logger;
+import utils.LocalizationManager;
 import java.io.File;
 import java.nio.file.Paths;
-import utils.LocalizationManager;
 
 public class Settings {
 	public static final String RESOURCES_DIR_NAME = "resources";

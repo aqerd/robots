@@ -1,13 +1,13 @@
 package gui;
 
+import entity.robots.BaseRobot;
+import entity.RobotModel;
 import gui.factory.Menu;
 import gui.factory.Window;
 import gui.windows.Coordinates;
 import gui.windows.Game;
 import gui.windows.Log;
 import log.Logger;
-import entity.robots.BaseRobot;
-import entity.RobotModel;
 import utils.LocalizationManager;
 import utils.StatefulWindow;
 import utils.WindowState;

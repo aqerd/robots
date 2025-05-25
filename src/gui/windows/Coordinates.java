@@ -1,9 +1,9 @@
 package gui.windows;
 
-import log.Logger;
 import entity.RobotModel;
+import log.Logger;
+import utils.LocalizationManager;
 import utils.StatefulWindow;
-
 import java.awt.BorderLayout;
 import java.util.Observable;
 import java.util.Observer;
@@ -19,7 +19,7 @@ public class Coordinates extends JInternalFrame implements Observer, StatefulWin
 		if (model instanceof Observable) {
 			((Observable) model).addObserver(this);
 		} else {
-			Logger.warn("RobotModel instance passed to Coordinates is not Observable.");
+			Logger.warn(LocalizationManager.getLocalizedText("warnRobotModelNotObservable"));
 		}
 		setLayout(new BorderLayout());
 		add(coordinatesLabel, BorderLayout.CENTER);

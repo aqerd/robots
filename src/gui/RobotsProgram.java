@@ -1,9 +1,9 @@
 package gui;
 
 import config.Settings;
+import java.awt.Frame;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
-import java.awt.Frame;
 
 public class RobotsProgram {
 	public static void main(String[] args) {
