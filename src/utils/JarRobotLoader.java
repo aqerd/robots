@@ -1,11 +1,8 @@
 package utils;
 
-import entity.RobotModel;
+import entity.robots.RobotModel;
 import gui.MainApplicationFrame;
 import log.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class JarRobotLoader {
 	public static void loadRobotFromJar(MainApplicationFrame frame) {
@@ -63,7 +63,7 @@ public class JarRobotLoader {
 
 	private static List<String> findRobotClassesInJar(File jarFile) throws IOException {
 		List<String> classNames = new ArrayList<>();
-		String packagePath = "entity/robots/";
+		String packagePath = "entity/robots/jar";
 		try (JarFile jar = new JarFile(jarFile)) {
 			jar.stream()
 				.map(JarEntry::getName)

@@ -1,20 +1,21 @@
-package entity.robots;
+package entity.robots.jar;
 
-import java.awt.Point;
-import java.awt.Image;
+import entity.robots.RobotModel;
+import log.Logger;
+import utils.LocalizationManager;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
-import entity.RobotModel;
-import log.Logger;
-import utils.LocalizationManager;
+import javax.swing.*;
 
-public class Pub extends Observable implements RobotModel {
-	private static final int IMAGE_WIDTH = 64;
-	private static final int IMAGE_HEIGHT = 64;
+public class CatoRabbit extends Observable implements RobotModel {
+	private static final int IMAGE_WIDTH = 48;
+	private static final int IMAGE_HEIGHT = 48;
 
 	private volatile double robotX = 100;
 	private volatile double robotY = 100;
@@ -23,14 +24,14 @@ public class Pub extends Observable implements RobotModel {
 	private volatile double targetX = 150;
 	private volatile double targetY = 100;
 
-	private static final double MAX_VELOCITY = 1.2;
-	private static final double MAX_ANGULAR_VELOCITY = 0.01;
+	private static final double MAX_VELOCITY = 6;
+	private static final double MAX_ANGULAR_VELOCITY = 0.5;
 
 	private Image robotImage;
 
-	public Pub() {
+	public CatoRabbit() {
 		try {
-			String IMAGE_PATH = "/images/pub.png";
+			String IMAGE_PATH = "/images/catorabbit.jpg";
 			URL imageURL = getClass().getResource(IMAGE_PATH);
 			if (imageURL != null) {
 				Image originalImage = ImageIO.read(imageURL);
@@ -48,7 +49,7 @@ public class Pub extends Observable implements RobotModel {
 			this.robotImage = null;
 		}
 
-		Timer timer = new Timer("Pub timer", true);
+		Timer timer = new Timer("CatoRabbit timer", true);
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -60,7 +61,7 @@ public class Pub extends Observable implements RobotModel {
 	@Override
 	public void updateModel() {
 		double distance = Point.distance(robotX, robotY, targetX, targetY);
-		if (distance < 0.5) {
+		if (distance < 0.1) {
 			return;
 		}
 
@@ -117,12 +118,18 @@ public class Pub extends Observable implements RobotModel {
 	}
 
 	@Override
-	public Image getImage() {
-		return robotImage;
-	}
+	public void draw(Graphics2D g, JPanel observer) {
+		int robotXCoord = (int) getRobotX();
+		int robotYCoord = (int) getRobotY();
+		double direction = getRobotDirection();
 
-	@Override
-	public String getDrawingRules() {
-		return null;
+		AffineTransform t = AffineTransform.getRotateInstance(direction, robotXCoord, robotYCoord);
+		g.setTransform(t);
+
+		if (this.robotImage != null) {
+			int imgWidth = this.robotImage.getWidth(observer);
+			int imgHeight = this.robotImage.getHeight(observer);
+			g.drawImage(this.robotImage, robotXCoord - imgWidth / 2, robotYCoord - imgHeight / 2, observer);
+		}
 	}
 }

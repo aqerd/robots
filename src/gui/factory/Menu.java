@@ -1,16 +1,24 @@
-package gui;
+package gui.factory;
 
+import entity.robots.example.BaseRobot;
+import entity.robots.example.Pub;
+import entity.robots.custom.ImageRobot;
+import entity.robots.custom.DrawableRobot;
+import gui.MainApplicationFrame;
+import gui.windows.dialog.RobotCustomization;
+import log.Logger;
 import utils.JarRobotLoader;
 import utils.LocalizationManager;
-import log.Logger;
-import entity.robots.*;
+import java.io.File;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class MenuFactory {
+public class Menu {
 	public static JMenu createFileMenu(MainApplicationFrame frame) {
 		JMenu fileMenu = new JMenu(LocalizationManager.getLocalizedText("file"));
 		fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -78,6 +86,44 @@ public class MenuFactory {
 			frame.setRobotModel(new Pub());
 		});
 		robotMenu.add(imageRobotItem);
+
+		JMenuItem loadImageRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("loadImageRobotMenuItem"));
+		loadImageRobotItem.addActionListener(_ -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle(LocalizationManager.getLocalizedText("selectImageFileDialogTitle"));
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				LocalizationManager.getLocalizedText("imageFileFilterDescription"), "jpg", "png", "webp", "gif");
+			fileChooser.setFileFilter(filter);
+			int returnValue = fileChooser.showOpenDialog(frame);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				Logger.info(LocalizationManager.getLocalizedText("logSelectedUserImageRobot", selectedFile.getAbsolutePath()));
+				frame.setRobotModel(new ImageRobot(selectedFile.getAbsolutePath()));
+			}
+		});
+		robotMenu.add(loadImageRobotItem);
+
+		JMenuItem createRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("createRobotMenuItem"));
+		createRobotItem.addActionListener(_ -> {
+			RobotCustomization dialog = new RobotCustomization(frame);
+			dialog.setVisible(true);
+			if (dialog.isConfirmed()) {
+				DrawableRobot robot = new DrawableRobot(
+					dialog.getSelectedSize(),
+					dialog.getSelectedShape(),
+					dialog.getSelectedFillColor(),
+					dialog.getSelectedBorderColor(),
+					dialog.getSelectedTargetIndicatorColor(),
+					dialog.getSelectedVelocity(),
+					dialog.getSelectedAngularVelocity()
+				);
+				frame.setRobotModel(robot);
+				Logger.info(LocalizationManager.getLocalizedText("logRobotConfiguredAndSet"));
+			} else {
+				Logger.info(LocalizationManager.getLocalizedText("logRobotConfigurationCancelled"));
+			}
+		});
+		robotMenu.add(createRobotItem);
 
 		JMenuItem loadRobotItem = new JMenuItem(LocalizationManager.getLocalizedText("loadRobotFromJarMenuItem"));
 		loadRobotItem.addActionListener(_ -> {

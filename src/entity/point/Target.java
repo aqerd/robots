@@ -1,4 +1,7 @@
-package entity;
+package entity.point;
+
+import java.awt.Graphics2D;
+import java.awt.Color;
 
 public class Target {
 	private int x;
@@ -20,5 +23,12 @@ public class Target {
 
 	public int getY() {
 		return y;
+	}
+
+	public void draw(Graphics2D g) {
+		g.setColor(Color.GREEN);
+		g.fillOval(x - 5 / 2, y - 5 / 2, 5, 5);
+		g.setColor(Color.BLACK);
+		g.drawOval(x - 5 / 2, y - 5 / 2, 5, 5);
 	}
 }

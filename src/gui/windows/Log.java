@@ -1,10 +1,9 @@
-package gui;
+package gui.windows;
 
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 import utils.StatefulWindow;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
@@ -13,11 +12,11 @@ import java.util.Properties;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener, StatefulWindow {
+public class Log extends JInternalFrame implements LogChangeListener, StatefulWindow {
 	private LogWindowSource m_logSource;
 	private TextArea m_logContent;
 
-	public LogWindow(LogWindowSource logSource) {
+	public Log(LogWindowSource logSource) {
 		super("", true, true, true, true);
 		m_logSource = logSource;
 		m_logSource.registerListener(this);
@@ -47,7 +46,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stat
 
 	@Override
 	public String getWindowId() {
-		return "LogWindow";
+		return "Log";
 	}
 
 	@Override

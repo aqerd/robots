@@ -1,6 +1,7 @@
 package gui;
 
 import log.Logger;
+import utils.LocalizationManager;
 import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -57,7 +58,7 @@ public class ApplicationMenu extends JMenuBar {
 	private JMenuItem createLogMessageMenuItem() {
 		JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
 		addLogMessageItem.addActionListener((_) -> {
-			Logger.debug("Новая строка");
+			Logger.debug(LocalizationManager.getLocalizedText("debugNewLine"));
 		});
 		return addLogMessageItem;
 	}
@@ -67,7 +68,7 @@ public class ApplicationMenu extends JMenuBar {
 			UIManager.setLookAndFeel(className);
 			SwingUtilities.updateComponentTreeUI(mainFrame);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			Logger.error("Ошибка при установке схемы оформления: " + e.getMessage());
+			Logger.error(LocalizationManager.getLocalizedText("errorSettingLookAndFeel", e.getMessage()));
 		}
 	}
 }

@@ -1,11 +1,11 @@
 package gui;
 
+import entity.robots.RobotModel;
+import entity.point.Target;
 import log.Logger;
-import entity.RobotModel;
+import utils.LocalizationManager;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -21,7 +21,7 @@ public class GameVisualizer extends JPanel implements Observer {
 		if (model instanceof Observable) {
 			((Observable) model).addObserver(this);
 		} else {
-			Logger.warn("RobotModel instance passed to GameVisualizer is not Observable.");
+			Logger.warn(LocalizationManager.getLocalizedText("warnRobotModelNotObservable"));
 		}
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -44,49 +44,11 @@ public class GameVisualizer extends JPanel implements Observer {
 		
 		AffineTransform originalTransform = g2d.getTransform();
 
-		drawRobot(g2d, model);
+		model.draw(g2d, this);
 
 		g2d.setTransform(originalTransform);
-		drawTarget(g2d, (int) model.getTargetX(), (int) model.getTargetY());
-	}
 
-	private void drawRobot(Graphics2D g, RobotModel robotModel) {
-		int x = (int) robotModel.getRobotX();
-		int y = (int) robotModel.getRobotY();
-		double direction = robotModel.getRobotDirection();
-		Image robotImage = robotModel.getImage();
-
-		AffineTransform t = AffineTransform.getRotateInstance(direction, x, y);
-		g.setTransform(t);
-
-		if (robotImage != null) {
-			int imgWidth = robotImage.getWidth(this);
-			int imgHeight = robotImage.getHeight(this);
-			g.drawImage(robotImage, x - imgWidth / 2, y - imgHeight / 2, this);
-		} else {
-			g.setColor(Color.MAGENTA);
-			fillOval(g, x, y, 30, 10);
-			g.setColor(Color.BLACK);
-			drawOval(g, x, y, 30, 10);
-			g.setColor(Color.WHITE);
-			fillOval(g, x + 10, y, 5, 5);
-			g.setColor(Color.BLACK);
-			drawOval(g, x + 10, y, 5, 5);
-		}
-	}
-
-	private void drawTarget(Graphics2D g, int x, int y) {
-		g.setColor(Color.GREEN);
-		fillOval(g, x, y, 5, 5);
-		g.setColor(Color.BLACK);
-		drawOval(g, x, y, 5, 5);
-	}
-
-	private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
-		g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-	}
-
-	private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
-		g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
+		Target targetToDraw = new Target((int) model.getTargetX(), (int) model.getTargetY());
+		targetToDraw.draw(g2d);
 	}
 }

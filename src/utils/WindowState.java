@@ -1,7 +1,6 @@
 package utils;
 
-import config.Config;
-
+import config.Settings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class WindowState {
-	private static final String CONFIG_FILE = Config.getFramesConfigPath();
+	private static final String CONFIG_FILE = Settings.getFramesConfigPath();
 
 	public static void saveStates(Map<String, StatefulWindow> windows) {
 		Properties props = new Properties();

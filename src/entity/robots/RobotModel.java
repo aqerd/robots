@@ -1,7 +1,8 @@
-package entity;
+package entity.robots;
 
 import java.awt.Point;
-import java.awt.Image;
+import java.awt.Graphics2D;
+import javax.swing.JPanel;
 
 public interface RobotModel {
 	double getRobotX();
@@ -11,6 +12,5 @@ public interface RobotModel {
 	double getTargetY();
 	void setTargetPosition(Point p);
 	void updateModel();
-	Image getImage();
-	String getDrawingRules();
+	void draw(Graphics2D g, JPanel observer);
 }

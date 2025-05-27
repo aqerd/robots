@@ -1,11 +1,11 @@
 package config;
 
 import log.Logger;
+import utils.LocalizationManager;
 import java.io.File;
 import java.nio.file.Paths;
-import utils.LocalizationManager;
 
-public class Config {
+public class Settings {
 	public static final String RESOURCES_DIR_NAME = "resources";
 	public static final String LANGUAGES_SUBDIR = "languages";
 	public static final String BUNDLE_BASE_NAME = "messages";

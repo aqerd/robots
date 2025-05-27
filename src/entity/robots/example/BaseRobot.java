@@ -1,11 +1,15 @@
-package entity.robots;
+package entity.robots.example;
 
-import entity.RobotModel;
+import entity.robots.RobotModel;
+
 import java.awt.Point;
-import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.geom.AffineTransform;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JPanel;
 
 public class BaseRobot extends Observable implements RobotModel {
 	private volatile double robotX = 100;
@@ -81,12 +85,21 @@ public class BaseRobot extends Observable implements RobotModel {
 	}
 
 	@Override
-	public Image getImage() {
-		return null;
-	}
+	public void draw(Graphics2D g, JPanel observer) {
+		int robotXCoord = (int) getRobotX();
+		int robotYCoord = (int) getRobotY();
+		double direction = getRobotDirection();
 
-	@Override
-	public String getDrawingRules() {
-		return null;
+		AffineTransform t = AffineTransform.getRotateInstance(direction, robotXCoord, robotYCoord);
+		g.setTransform(t);
+
+		g.setColor(Color.MAGENTA);
+		g.fillOval(robotXCoord - 30 / 2, robotYCoord - 10 / 2, 30, 10);
+		g.setColor(Color.BLACK);
+		g.drawOval(robotXCoord - 30 / 2, robotYCoord - 10 / 2, 30, 10);
+		g.setColor(Color.WHITE);
+		g.fillOval(robotXCoord + 10 - 5 / 2, robotYCoord - 5 / 2, 5, 5);
+		g.setColor(Color.BLACK);
+		g.drawOval(robotXCoord + 10 - 5 / 2, robotYCoord - 5 / 2, 5, 5);
 	}
 }
